@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security;
+package theChillys.chillys_radio.security.user;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 

@@ -1,19 +1,17 @@
-package theChillys.chillys_radio.security;
+package theChillys.chillys_radio.security.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserResponseDto {
-    private Long id;
+public class UserRequestDto {
+
     private String name;
+    private String password;
     private String email;
-    private Set<Role> roles;
 }

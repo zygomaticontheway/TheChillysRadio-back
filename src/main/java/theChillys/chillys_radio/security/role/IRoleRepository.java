@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security;
+package theChillys.chillys_radio.security.role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

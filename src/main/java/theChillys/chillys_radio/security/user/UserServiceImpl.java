@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security;
+package theChillys.chillys_radio.security.user;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import theChillys.chillys_radio.security.role.IRoleService;
+import theChillys.chillys_radio.security.role.Role;
 
 import java.util.Collections;
 import java.util.List;
