@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.user.entity.User;
@@ -15,6 +16,7 @@ import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor //делает конструктор только для final полей, для остальных не делает
 @Service
@@ -61,6 +63,32 @@ public class UserServiceImpl implements IUserService { //можно также �
     @Override
     public UserResponseDto setAdminRole(String username) {
         return null;
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        List<User> users = repository.findAll();
+        return users.stream()
+                .map(user -> mapper.map(user, UserResponseDto.class)).toList();
+
+    }
+
+    @Override
+    public Optional<UserResponseDto> getUserById(Long id) {
+        return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        String msg = "User id:" + id + " not found";
+        return repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(msg));
+    }
+
+    @Override
+    public List<User> findUsersByNameOrEmail(String name, String email) {
+        IUserRepository userRepository = null;
+        return userRepository.findByNameContainingOrEmailContaining(name, email);
     }
 
     //как spring получает User по логину
