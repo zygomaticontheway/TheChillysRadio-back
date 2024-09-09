@@ -35,7 +35,6 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated() //все остальные запросы доступны только авторизованным пользователям
                 ).httpBasic(Customizer.withDefaults());
 
-
         return http.build();
     }
 }

@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security;
+package theChillys.chillys_radio.role;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

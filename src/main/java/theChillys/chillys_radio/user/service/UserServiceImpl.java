@@ -1,46 +1,34 @@
 package theChillys.chillys_radio.user.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import theChillys.chillys_radio.exception.StationNotFoundException;
-import theChillys.chillys_radio.exception.UserNotFoundException;
-import theChillys.chillys_radio.security.UserResponseDto;
+import theChillys.chillys_radio.role.IRoleService;
+import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
-import theChillys.chillys_radio.station.entity.Station;
-import theChillys.chillys_radio.station.repository.StationRepository;
 import theChillys.chillys_radio.user.entity.User;
-import theChillys.chillys_radio.user.repository.UserRepository;
+import theChillys.chillys_radio.user.dto.UserRequestDto;
+import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.repository.IUserRepository;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@RequiredArgsConstructor //делает конструктор только для final полей, для остальных не делает
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService { //можно также добавить в implements UserDetailsService, но мы уже добавили extends в IUserService
 
-    private final UserRepository userRepository;
-    private final StationRepository stationRepository;
-    private final ModelMapper modelMapper;
-
-
-   public Station findStationById(Long stationId) {
-        Station station_entity = stationRepository
-                .findById(stationId)
-                .orElseThrow(() -> new StationNotFoundException("Station with id" + stationId + " not found"));
-        return station_entity;
-    }
-
-
-    public User findUserById(Long userId) {
-        User user_entity = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with id" + userId + " not found"));
-        return user_entity;
-    }
+    @Autowired
+    private final IUserRepository repository;
+    private final IRoleService roleService;
+    private final BCryptPasswordEncoder encoder;
+    private final ModelMapper mapper;
 
 
     @Override
@@ -49,10 +37,12 @@ public class UserServiceImpl implements IUserService {
         User user = findUserById(userId);
 
         List<StationResponseDto> favoriteStationsDto = user.getFavorites().stream()
-                .map(st -> modelMapper.map(st, StationResponseDto.class))
+                .map(st -> mapper.map(st, StationResponseDto.class))
                 .collect(Collectors.toList());
 
-        return new UserResponseDto(user.getId(), user.getName(), user.getEmail(), favoriteStationsDto);
+        Set<Role> roles = user.getRoles();
+
+        return new UserResponseDto(user.getId(), user.getName(), user.getEmail(), favoriteStationsDto, roles);
     }
 
     @Override
@@ -65,8 +55,62 @@ public class UserServiceImpl implements IUserService {
         return false;
     }
 
+
+    public User findUserById(Long userId) {
+        return repository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
+
+
+    @Override
+    public List<UserResponseDto> getUsers() {
+        return List.of();
+    }
+
+    @Override
+    public UserResponseDto createUser(UserRequestDto dto) {
+
+        repository.findUserByName(dto.getName()).ifPresent(u -> {
+            throw new RuntimeException("User " + dto.getName() + " already exists");
+        });
+
+        Role role = roleService.getRoleByTitle("ROLE_USER");
+
+        String encodedPass = encoder.encode(dto.getPassword());
+
+        User newUser = new User();
+        newUser.setName(dto.getName());
+        newUser.setEmail(dto.getEmail());
+        newUser.setPassword(encodedPass);
+        newUser.setRoles(Collections.singleton(role));
+        newUser.setFavorites(Collections.emptySet()); // Инициализируем пустым набором
+
+        User savedUser = repository.save(newUser);
+
+        return mapper.map(savedUser, UserResponseDto.class);
+    }
+
+    @Override
+    public UserResponseDto setAdminRole(String username) {
+        return null;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return null;
     }
+}
+
+@Override
+public UserResponseDto setAdminRole(String username) {
+    return null;
+}
+
+    //как spring получает User по логину
+    @Override
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+
+        return repository.findUserByName(name).orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+    }
+
 }
