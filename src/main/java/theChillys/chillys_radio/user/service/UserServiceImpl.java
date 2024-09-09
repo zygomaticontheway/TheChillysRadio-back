@@ -15,6 +15,7 @@ import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor //делает конструктор только для final полей, для остальных не делает
 @Service
@@ -61,6 +62,22 @@ public class UserServiceImpl implements IUserService { //можно также �
     @Override
     public UserResponseDto setAdminRole(String username) {
         return null;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return List.of();
+    }
+
+    @Override
+    public Optional<User> getUserById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<User> findUsersByNameOrEmail(String name, String email) {
+        IUserRepository userRepository = null;
+        return userRepository.findByNameContainingOrEmailContaining(name, email);
     }
 
     //как spring получает User по логину
