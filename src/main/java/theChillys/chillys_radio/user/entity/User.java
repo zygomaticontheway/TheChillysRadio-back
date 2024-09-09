@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security.user;
+package theChillys.chillys_radio.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import theChillys.chillys_radio.security.role.Role;
+import theChillys.chillys_radio.role.Role;
 
 import java.util.Collection;
 import java.util.Set;

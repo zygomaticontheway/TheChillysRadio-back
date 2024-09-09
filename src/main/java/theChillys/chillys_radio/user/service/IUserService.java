@@ -1,6 +1,8 @@
-package theChillys.chillys_radio.security.user;
+package theChillys.chillys_radio.user.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import theChillys.chillys_radio.user.dto.UserRequestDto;
+import theChillys.chillys_radio.user.dto.UserResponseDto;
 
 import java.util.List;
 

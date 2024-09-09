@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security.user;
+package theChillys.chillys_radio.station.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserRequestDto {
+public class StationRequestDto {
 
-    private String name;
-    private String password;
-    private String email;
+
 }

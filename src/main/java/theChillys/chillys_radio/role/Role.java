@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.security.role;
+package theChillys.chillys_radio.role;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
