@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import theChillys.chillys_radio.role.Role;
+import theChillys.chillys_radio.station.entity.Station;
 
 import java.util.Collection;
 import java.util.Set;
@@ -42,6 +43,14 @@ public class User implements UserDetails { //имплементирует инт
     )
     @Column(name = "roles")
     private Set<Role> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "station_id")
+    )
+    private Set<Station> favorites;
 
     @Override
     public final boolean equals(Object o) {

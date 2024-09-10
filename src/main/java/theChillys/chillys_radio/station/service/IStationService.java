@@ -1,8 +1,7 @@
 package theChillys.chillys_radio.station.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
 
+public interface IStationService {
 
-public interface IStationService extends UserDetailsService {
-
+    UserResponseDto createUser(UserRequestDto dto);
 }
