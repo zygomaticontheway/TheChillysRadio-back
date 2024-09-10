@@ -2,7 +2,6 @@ package theChillys.chillys_radio.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,19 +19,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor //делает конструктор только для final полей, для остальных не делает
+@RequiredArgsConstructor
 @Service
-public class UserServiceImpl implements IUserService { //можно также добавить в implements UserDetailsService, но мы уже добавили extends в IUserService
+public class UserServiceImpl implements IUserService {
 
-    @Autowired
     private final IUserRepository repository;
     private final IRoleService roleService;
     private final BCryptPasswordEncoder encoder;
     private final ModelMapper mapper;
 
+    public User findUserById(Long userId) {
+        return repository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
 
     @Override
-    public UserResponseDto getUsersFavoriteStations(Long userId, Long stationId) {
+    public UserResponseDto getUsersFavoriteStations(Long userId) {
 
         User user = findUserById(userId);
 
@@ -42,23 +44,25 @@ public class UserServiceImpl implements IUserService { //можно также �
 
         Set<Role> roles = user.getRoles();
 
-        return new UserResponseDto(user.getId(), user.getName(), user.getEmail(), favoriteStationsDto, roles);
+        return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                favoriteStationsDto,
+                roles);
     }
+
 
     @Override
     public boolean setLike(Long userId, Long stationId) {
+
         return false;
     }
 
     @Override
     public boolean logOut(Long userId) {
+
         return false;
-    }
-
-
-    public User findUserById(Long userId) {
-        return repository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
     }
 
 
@@ -83,7 +87,7 @@ public class UserServiceImpl implements IUserService { //можно также �
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(encodedPass);
         newUser.setRoles(Collections.singleton(role));
-        newUser.setFavorites(Collections.emptySet()); // Инициализируем пустым набором
+        newUser.setFavorites(Collections.emptySet());
 
         User savedUser = repository.save(newUser);
 
@@ -92,25 +96,13 @@ public class UserServiceImpl implements IUserService { //можно также �
 
     @Override
     public UserResponseDto setAdminRole(String username) {
+        // Реализуйте логику назначения роли администратора
         return null;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
-}
-
-@Override
-public UserResponseDto setAdminRole(String username) {
-    return null;
-}
-
-    //как spring получает User по логину
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-
-        return repository.findUserByName(name).orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+        return repository.findUserByName(name)
+                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
-
 }

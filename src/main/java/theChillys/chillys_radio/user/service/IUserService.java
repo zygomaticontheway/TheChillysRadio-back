@@ -7,7 +7,7 @@ import theChillys.chillys_radio.user.dto.UserResponseDto;
 import java.util.List;
 
 public interface IUserService extends UserDetailsService {
-    UserResponseDto getUsersFavoriteStations(Long userId, Long stationId);
+    UserResponseDto getUsersFavoriteStations(Long userId);
     public boolean setLike(Long userId, Long stationId);
     public boolean logOut (Long userId);
 
