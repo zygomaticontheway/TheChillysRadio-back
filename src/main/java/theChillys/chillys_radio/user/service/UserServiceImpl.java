@@ -101,8 +101,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
-        User user = repository.findUserById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        User user = findUserById(userId);
 
         user.setId(userId);
         user.setName(dto.getName());
