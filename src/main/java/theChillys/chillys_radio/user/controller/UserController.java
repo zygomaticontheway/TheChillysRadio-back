@@ -17,7 +17,7 @@ public class UserController {
     @Qualifier("userServiceImpl")
     private IUserService service;
 
-    @PostMapping
+    @PostMapping("/users")
     public UserResponseDto createUser(@RequestBody UserRequestDto dto) {
         return service.createUser(dto);
     }

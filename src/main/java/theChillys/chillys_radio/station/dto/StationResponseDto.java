@@ -15,7 +15,7 @@ public class StationResponseDto {
     private String stationuuid;
     private String name;
     private String url;
-    private String urlResolved;
+    private String url_resolved;
     private String homepage;
     private String favicon;
     private String tags;
@@ -30,6 +30,29 @@ public class StationResponseDto {
     private Integer bitrate;
     private Integer lastcheckok;
     private Long clickcount;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StationResponseDto that)) return false;
+
+        return stationuuid.equals(that.stationuuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return stationuuid.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "StationResponseDto{" +
+                "id=" + id +
+                ", stationuuid='" + stationuuid + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 }
 
 
