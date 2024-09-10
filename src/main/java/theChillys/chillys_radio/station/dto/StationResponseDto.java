@@ -27,8 +27,8 @@ public class StationResponseDto {
     private Long votes;
     private String lastchangetime;
     private String codec;
-    private int bitrate;
-    private int lastcheckok;
+    private Integer bitrate;
+    private Integer lastcheckok;
     private Long clickcount;
 
     @Override
@@ -52,4 +52,7 @@ public class StationResponseDto {
                 ", name='" + name + '\'' +
                 '}';
     }
+
 }
+
+

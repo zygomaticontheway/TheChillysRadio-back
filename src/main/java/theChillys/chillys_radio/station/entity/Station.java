@@ -2,16 +2,22 @@ package theChillys.chillys_radio.station.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name="station")
+
 public class Station {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "id")
     private Long id;
 
@@ -48,11 +54,13 @@ public class Station {
     @Column(name = "language")
     private String language;
 
+
     @Column(name = "languagecodes")
     private String languagecodes;
 
     @Column(name = "votes")
     private Long votes;
+
 
     @Column(name = "lastchangetime")
     private String lastchangetime;
@@ -61,7 +69,7 @@ public class Station {
     private String codec;
 
     @Column(name = "bitrate")
-    private int bitrate;
+    private Integer bitrate;
 
     @Column(name = "lastcheckok")
     private int lastcheckok;
@@ -90,4 +98,5 @@ public class Station {
                 ", name='" + name + '\'' +
                 '}';
     }
+
 }
