@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.station.dto;
+package theChillys.chillys_radio.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class StationResponseDto {
+public class DataResponseDto {
 
     private Long id;
     private String stationuuid;
@@ -30,11 +30,28 @@ public class StationResponseDto {
     private int bitrate;
     private int lastcheckok;
     private Long clickcount;
+    private String changeuuid;
+    private String iso_3166_2;
+    private String lastchangetime_iso8601;
+    private String hls;
+    private String lastchecktime;
+    private String lastchecktime_iso8601;
+    private String lastcheckoktime;
+    private String lastcheckoktime_iso8601;
+    private String lastlocalchecktime;
+    private String lastlocalchecktime_iso8601;
+    private String clicktimestamp;
+    private String clicktimestamp_iso8601;
+    private String clicktrend;
+    private String ssl_error;
+    private String geo_lat;
+    private String geo_long;
+    private String has_extended_info;
 
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof StationResponseDto that)) return false;
+        if (!(o instanceof DataResponseDto that)) return false;
 
         return stationuuid.equals(that.stationuuid);
     }
@@ -46,7 +63,7 @@ public class StationResponseDto {
 
     @Override
     public String toString() {
-        return "StationResponseDto{" +
+        return "DataResponseDto{" +
                 "id=" + id +
                 ", stationuuid='" + stationuuid + '\'' +
                 ", name='" + name + '\'' +

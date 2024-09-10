@@ -1,4 +1,4 @@
-package theChillys.chillys_radio.station.dto;
+package theChillys.chillys_radio.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class StationRequestDto {
+public class DataRequestDto {
 
     private String stationuuid;
 }
