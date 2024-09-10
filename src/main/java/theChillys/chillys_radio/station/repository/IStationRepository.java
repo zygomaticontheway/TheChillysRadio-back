@@ -6,5 +6,5 @@ import theChillys.chillys_radio.user.entity.User;
 import java.util.Optional;
 
 public interface IStationRepository extends JpaRepository<User, Long> {
-    public Optional<User> findUserByName(String name);
+
 }
