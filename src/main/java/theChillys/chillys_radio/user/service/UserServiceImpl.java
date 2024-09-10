@@ -2,6 +2,7 @@ package theChillys.chillys_radio.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +19,6 @@ import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements IUserService {
 
+    @Autowired
     private final IUserRepository repository;
     private final IRoleService roleService;
     private final BCryptPasswordEncoder encoder;
@@ -102,35 +103,28 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponseDto setAdminRole(String username) {
         // TODO Реализуйте логику назначения роли администратора
-        
+
       return null;
     }
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        List<User> customers = repository.findAll();
-        
-        return customers.stream().map(c->mapper.map(c, UserResponseDto.class)).toList();
+        List<User> user = repository.findAll();
+        return user.stream().map(c->mapper.map(user, UserResponseDto.class)).toList();
     }
 
     @Override
-    public Optional<UserResponseDto> getUserById(Long id) {
-        
-      return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
-    }
-
-    private Object findUserById(Long id) {
-        String msg = "User id:" + id + " not found";
+    public UserResponseDto getUserById(Long id) {
         User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(msg));
-        
-        return user;
+                .orElseThrow(() -> new UserNotFoundException("User " + id + " not found"));
+        return mapper.map(user, UserResponseDto.class);
+
     }
 
     @Override
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
-        List<User> users = IUserRepository.findByNameContainingOrEmailContaining(name, email);
-        
+        List<User> users = IUserRepository.findUsersByNameOrEmail(name, email);
+
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
@@ -138,7 +132,7 @@ public class UserServiceImpl implements IUserService {
     //как spring получает User по логину
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        
+
       return repository.findUserByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
