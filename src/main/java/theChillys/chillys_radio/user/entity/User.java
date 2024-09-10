@@ -35,11 +35,12 @@ public class User implements UserDetails { //имплементирует инт
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER) // LAZY - если с юзером ничего не делается, то она роли лежащие в других таблицах даже не читает, EAGER - сразу начитывает всю информацию со всех связанных таблиц || зачитывание происходит в рамках одной транзакции
+    @ManyToMany(fetch = FetchType.EAGER)
+    // LAZY - если с юзером ничего не делается, то она роли лежащие в других таблицах даже не читает, EAGER - сразу начитывает всю информацию со всех связанных таблиц || зачитывание происходит в рамках одной транзакции
     @JoinTable(
-        name = "user_role",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     @Column(name = "roles")
     private Set<Role> roles;

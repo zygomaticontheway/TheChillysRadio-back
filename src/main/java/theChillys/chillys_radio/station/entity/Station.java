@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -11,15 +17,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+
 @Entity
-
+@Table(name = "t_station")
 public class Station {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(name = "stationuuid")
     private String stationuuid;
@@ -54,13 +59,11 @@ public class Station {
     @Column(name = "language")
     private String language;
 
-
     @Column(name = "languagecodes")
     private String languagecodes;
 
     @Column(name = "votes")
     private Long votes;
-
 
     @Column(name = "lastchangetime")
     private String lastchangetime;
@@ -76,6 +79,7 @@ public class Station {
 
     @Column(name = "clickcount")
     private Long clickcount;
+
 
     @Override
     public final boolean equals(Object o) {

@@ -13,13 +13,18 @@ public interface IUserService {
 
     UserResponseDto createUser(UserRequestDto dto);
 
+    UserResponseDto updateUser(Long userId, UserRequestDto dto);
+
     List<UserResponseDto> getUsers();
 
     Optional<UserResponseDto> getUserById(Long id);
+
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
     UserResponseDto getUsersFavoriteStations(Long userId);
+
     boolean setLike(Long userId, Long stationId);
+
     boolean logOut(Long userId);
 
     UserResponseDto setAdminRole(String username);

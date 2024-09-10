@@ -11,7 +11,7 @@ import theChillys.chillys_radio.user.service.IUserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -26,6 +26,11 @@ public class UserController {
     @GetMapping("/{userId}/favorites")
     public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
         return service.getUsersFavoriteStations(userId);
+    }
+
+    @PutMapping("/users/{id}")
+    public UserResponseDto updateUser(@PathVariable Long userId, @RequestBody UserRequestDto dto) {
+        return service.updateUser(userId, dto);
     }
 }
 

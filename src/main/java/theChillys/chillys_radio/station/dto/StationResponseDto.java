@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class StationResponseDto {
 
-    private Long id;
+    private long id;
     private String stationuuid;
     private String name;
     private String url;
@@ -23,7 +23,7 @@ public class StationResponseDto {
     private String countrycode;
     private String state;
     private String language;
-    private String languagecodes;
+    private String languagecode;
     private Long votes;
     private String lastchangetime;
     private String codec;
