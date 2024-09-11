@@ -2,12 +2,10 @@ package theChillys.chillys_radio.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
@@ -18,7 +16,6 @@ import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
