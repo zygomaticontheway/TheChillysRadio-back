@@ -18,19 +18,5 @@ import java.util.List;
 @Service
 public class StationService implements IStationService { //можно также добавить в implements UserDetailsService, но мы уже добавили extends в IUserService
 
-    private final IUserRepository repository;
-    private final IRoleService roleService;
-    private final BCryptPasswordEncoder encoder;
-    private final ModelMapper mapper;
 
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }
-
-    @Override
-    public UserResponseDto createUser(UserRequestDto dto) {
-        return null;
-    }
 }

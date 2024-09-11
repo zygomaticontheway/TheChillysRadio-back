@@ -1,16 +1,18 @@
 package theChillys.chillys_radio.data.service;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.DataResponseDto;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
+import theChillys.chillys_radio.station.dto.StationResponseDto;
+import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +35,6 @@ import java.util.concurrent.Executors;
 //
 
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Service
 
 public class dataServiceImpl implements IDataService {
@@ -44,35 +45,42 @@ public class dataServiceImpl implements IDataService {
     private final String getStationByStationuuidUrl = "http://all.api.radio-browser.info/json/stations/byuuid/";//+ stationuuid
     private final String postClickStationUrl = "http://all.api.radio-browser.info/json/stations/byuuid/"; //+ stationuuid
     private final String postVoteStationUrl = "http://all.api.radio-browser.info/json/url/"; //+ stationuuid
-    private final ExecutorService executor = Executors.newCachedThreadPool();
     private final IStationRepository repository;
 
 
     @Override
-    public List<DataResponseDto> getAllStations() {
-
-        List<DataResponseDto> response = new ArrayList<>();
-
-        executor.submit(() -> {
-            try {
-                response = webClient.get()
-                        .uri(getAllStationsUrl)
-                        .retrieve()
-                        .bodyToFlux(DataResponseDto.class)
-                        .collectList()
-                        .subscribe(list -> saveToDatabase((DataResponseDto) list));
-
-            } catch (Exception e) {
-                // log.error()
-                // оповещаешь фронт о том, что что-то пошло не так - назначаешь таске статус - ошибка
-                throw new IllegalStateException(e);
-            }
+    public Mono<ModifyResponseDto> getAllStations() {
+        return webClient.get()
+                .uri(getAllStationsUrl)
+                .retrieve()
+                .bodyToFlux(DataResponseDto.class)
+                .collectList()
+                .flatMap(this::saveListStationsToDatabase)
+                .map(modifiedItems -> {
+                    String message = "Added items to database: " + modifiedItems;
+                    return new ModifyResponseDto(true, message, modifiedItems);
+                })
+                .onErrorResume(e -> {
+                    String errorMessage = "Error occurred: " + e.getMessage();
+                    return Mono.just(new ModifyResponseDto(false, errorMessage, 0L));
+                });
+    }
+    private Mono<StationResponseDto> saveStationToDatabase(DataResponseDto response) {
+        return Mono.fromCallable(() -> {
+            Station station = mapper.map(response, Station.class);
+            Station savedStation = repository.save(station);
+            return mapper.map(savedStation, StationResponseDto.class);
         });
-        return response;
+    }
+
+    private Mono<Long> saveListStationsToDatabase(List<DataResponseDto> response) {
+        return Flux.fromIterable(response)
+                .flatMap(this::saveStationToDatabase)
+                .count();
     }
 
     @Override
-    public DataResponseDto getStationByStationuuid(String stationuuid) {
+    public ModifyResponseDto getStationByStationuuid(String stationuuid) {
         return null;
     }
 
@@ -85,12 +93,5 @@ public class dataServiceImpl implements IDataService {
     public ModifyResponseDto postVoteStation(String stationuuid) {
         return null;
     }
-
-    public boolean saveToDatabase(DataResponseDto response) {
-
-    }
-// 1. вариант - websockets
-// 2. сделать endpoint GET /tasks/{task-id}/state
-
 
 }

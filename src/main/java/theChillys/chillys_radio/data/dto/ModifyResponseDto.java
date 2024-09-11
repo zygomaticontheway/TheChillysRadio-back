@@ -13,7 +13,6 @@ public class ModifyResponseDto {
 
     private boolean ok;
     private String message;
-    private String stationuuid;
-    private String name;
-    private String url;
+    private Long modifiedItems;
+
 }
