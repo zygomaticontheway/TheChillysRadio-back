@@ -28,9 +28,5 @@ public class UserController {
         return service.getUsersFavoriteStations(userId);
     }
 
-    @PostMapping("/users/my-votes")
-    public boolean setLike(Long userId, Long stationId){
-
-    }
 }
 
