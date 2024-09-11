@@ -17,4 +17,8 @@ public class AppConfiguration {
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
     }
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder().build();
+    }
 }
