@@ -1,19 +1,18 @@
 package theChillys.chillys_radio.user.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
-import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
@@ -100,9 +99,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
-        User user = findUserById(userId);
-
+        User user = mapper.map(dto, User.class);
         user.setId(userId);
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
@@ -110,7 +109,17 @@ public class UserServiceImpl implements IUserService {
         User savedUser = repository.save(user);
         return mapper.map(savedUser, UserResponseDto.class);
 
+    }
 
+    @Override
+    @Transactional
+    public UserResponseDto changePassword(Long userId, String newPassword) {
+        User user = findUserById(userId);
+        String encodedPass = encoder.encode(newPassword);
+        user.setPassword(encodedPass);
+        repository.save(user);
+
+        return null;
     }
 
 
