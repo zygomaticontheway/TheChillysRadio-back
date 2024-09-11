@@ -8,10 +8,13 @@ import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.IUserService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api")
 public class UserController {
+
 
     @Autowired
     @Qualifier("userServiceImpl")
@@ -20,6 +23,11 @@ public class UserController {
     @PostMapping("/users")
     public UserResponseDto createUser(@RequestBody UserRequestDto dto) {
         return service.createUser(dto);
+    }
+
+    @GetMapping("/users")
+    public List<UserResponseDto> getUsers() {
+        return service.getUsers();
     }
 
     @GetMapping("/{userId}/favorites")
