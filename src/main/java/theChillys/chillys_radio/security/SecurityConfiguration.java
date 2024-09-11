@@ -38,9 +38,9 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)//отключаем basic authorisation
                 .authorizeHttpRequests( //содержит настройки защиты эндпоинтов, все что тут прописано не будет, то будет заблокировано по умолчанию
                         x -> x
-                                .requestMatchers(HttpMethod.GET, "/products").permitAll() // permitAll = разрешить всем
-                                .requestMatchers(HttpMethod.GET, "/products/{id}").hasAnyRole("USER", "ADMIN") //hasAnyRole("USER") = разрешить только пользователям с перечисленными ролями  (да отбрасываем ROLE_)
-                                .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN") //hasAnyRole("ADMIN") = разрешить только пользователям с ролью ADMIN
+                                .requestMatchers(HttpMethod.GET, "/api/users").permitAll() // permitAll = разрешить всем
+                                .requestMatchers(HttpMethod.GET, "/users/{id}/favorites").hasAnyRole("USER", "ADMIN") //hasAnyRole("USER") = разрешить только пользователям с перечисленными ролями  (да отбрасываем ROLE_)
+                                .requestMatchers(HttpMethod.POST, "/api/users").permitAll() //.hasAnyRole("USER", "ADMIN") //hasAnyRole("ADMIN") = разрешить только пользователям с ролью ADMIN
                                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
                                 .anyRequest().authenticated() //все остальные запросы доступны только авторизованным пользователям
                 ).addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
