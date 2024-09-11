@@ -6,7 +6,7 @@ import theChillys.chillys_radio.data.dto.ModifyResponseDto;
 
 public interface IDataService {
     Mono<ModifyResponseDto> getAllStations();
-    ModifyResponseDto getStationByStationuuid(String stationuuid);
-    ModifyResponseDto postClickStation(String stationuuid);
-    ModifyResponseDto postVoteStation(String stationuuid);
+    Mono<ModifyResponseDto> getStationByStationuuid(String stationuuid);
+    Mono<ModifyResponseDto> postClickStation(String stationuuid);
+    Mono<ModifyResponseDto> postVoteStation(String stationuuid);
 }
