@@ -26,15 +26,12 @@ public class AuthController {
         return service.getNewAccessToken(dto.getRefreshToken());
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!
     @GetMapping("/logout")
     public TokenResponseDto logout(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7); // Предполагаем, что токен в формате "Bearer <token>"
 
-        // Логика для выхода пользователя
+        String token = authHeader.substring(7);
         service.logout(token);
 
-        // Возвращаем пустой `TokenResponseDto` или сообщение об успешном выходе, если необходимо
         return new TokenResponseDto(null, null);
     }
 
