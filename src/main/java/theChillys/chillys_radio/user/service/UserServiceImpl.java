@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
+import theChillys.chillys_radio.station.entity.Station;
+import theChillys.chillys_radio.station.repository.IStationRepository;
 import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
@@ -31,7 +33,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IRoleService roleService;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
-//    private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
+    private final IStationRepository stationRepository;
+//  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
         return repository.findById(userId)
@@ -61,8 +64,21 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public boolean setLike(Long userId, Long stationId) {
 
-        return false;
+        User user = findUserById(userId);
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(() ->
+                        new RuntimeException("Station not found with id: " + stationId));
+
+        if (user.getFavorites().contains(station)) {
+            return false;
+        }
+
+        user.getFavorites().add(station);
+        repository.save(user);
+
+        return true;
     }
+
 
     @Override
     public boolean logOut(Long userId) {
