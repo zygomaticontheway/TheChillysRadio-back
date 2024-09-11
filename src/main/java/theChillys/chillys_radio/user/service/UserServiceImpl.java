@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
+import theChillys.chillys_radio.station.entity.Station;
+import theChillys.chillys_radio.station.repository.IStationRepository;
 import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
@@ -25,17 +27,18 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService, UserDetailsService {
 
     private final IUserRepository repository;
     private final IRoleService roleService;
-    private final BCryptPasswordEncoder encoder;
     private final ModelMapper mapper;
-    private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
+    private final BCryptPasswordEncoder encoder;
+    private final IStationRepository stationRepository;
+//  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
         return repository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new RuntimeException("User with id:" + userId + " not found"));
     }
 
     @Override
@@ -61,8 +64,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean setLike(Long userId, Long stationId) {
 
-        return false;
+        User user = findUserById(userId);
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(() ->
+                        new RuntimeException("Station not found with id: " + stationId));
+
+        if (user.getFavorites().contains(station)) {
+            return false;
+        }
+
+        user.getFavorites().add(station);
+        repository.save(user);
+
+        return true;
     }
+
 
     @Override
     public boolean logOut(Long userId) {
@@ -70,10 +86,11 @@ public class UserServiceImpl implements IUserService {
         return false;
     }
 
-
     @Override
     public List<UserResponseDto> getUsers() {
-        return List.of();
+        List<User> customers = repository.findAll();
+
+        return customers.stream().map(c->mapper.map(c, UserResponseDto.class)).toList();
     }
 
     @Override
@@ -106,12 +123,7 @@ public class UserServiceImpl implements IUserService {
       return null;
     }
 
-    @Override
-    public List<UserResponseDto> getAllUsers() {
-        List<User> customers = repository.findAll();
-        
-        return customers.stream().map(c->mapper.map(c, UserResponseDto.class)).toList();
-    }
+
 
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
@@ -119,17 +131,9 @@ public class UserServiceImpl implements IUserService {
       return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
     }
 
-    private Object findUserById(Long id) {
-        String msg = "User id:" + id + " not found";
-        User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(msg));
-        
-        return user;
-    }
-
     @Override
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
-        List<User> users = IUserRepository.findByNameContainingOrEmailContaining(name, email);
+        List<User> users = repository.findByNameContainingOrEmailContaining(name, email);
         
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
