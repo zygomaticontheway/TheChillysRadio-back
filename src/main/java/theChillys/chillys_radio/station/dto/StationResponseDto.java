@@ -31,6 +31,9 @@ public class StationResponseDto {
     private Integer lastcheckok;
     private Long clickcount;
 
+    public StationResponseDto(String stationuuid, String name, String url, String urlResolved, String homepage, String favicon, String tags, String country, String countrycode, String state, String language, String languagecodes, Long votes, Long clickcount, String lastchangetime, String codec, Integer bitrate, int lastcheckok) {
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
