@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor //делает конструктор только для final полей, для остальных не делает
 @Service
-public class StationServiceImpl implements IStationService { //можно также добавить в implements UserDetailsService, но мы уже добавили extends в IUserService
+public class StationServiceImpl implements IStationService { 
 
     private final ModelMapper mapper;
     private final IStationRepository repository;
