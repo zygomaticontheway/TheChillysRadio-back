@@ -2,20 +2,21 @@ package theChillys.chillys_radio.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
-import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
@@ -90,7 +90,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public List<UserResponseDto> getUsers() {
         List<User> customers = repository.findAll();
 
-        return customers.stream().map(c->mapper.map(c, UserResponseDto.class)).toList();
+        return customers.stream().map(c -> mapper.map(c, UserResponseDto.class)).toList();
     }
 
     @Override
@@ -119,22 +119,21 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public UserResponseDto setAdminRole(String username) {
         // TODO Реализуйте логику назначения роли администратора
-        
-      return null;
-    }
 
+        return null;
+    }
 
 
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
-        
-      return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
+
+        return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
     }
 
     @Override
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
         List<User> users = repository.findByNameContainingOrEmailContaining(name, email);
-        
+
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
@@ -142,8 +141,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     //как spring получает User по логину
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        
-      return repository.findUserByName(name)
+
+        return repository.findUserByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
 }
