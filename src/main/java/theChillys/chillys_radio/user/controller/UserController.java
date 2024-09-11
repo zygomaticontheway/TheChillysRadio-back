@@ -8,6 +8,11 @@ import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.IUserService;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -35,5 +40,20 @@ public class UserController {
     }
 
 
+    @GetMapping
+    public List<UserResponseDto> getAllUsers() {
+        return service.getUsers();
+}
+
+     @GetMapping("/users/{id}")
+     public Optional<UserResponseDto> getUserById(@PathVariable(name="id") Long userId) {
+        return service.getUserById(Long.valueOf(String.valueOf(id)));
+}
+
+     @GetMapping("/users?name=...&email=...")
+     public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
+                                                         @RequestParam(required = false) String email) {
+         return service.findUsersByNameOrEmail(name, email);
+     }
 }
 
