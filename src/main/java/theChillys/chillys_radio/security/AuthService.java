@@ -61,4 +61,13 @@ public class AuthService {
 
     }
 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    public void logout(String token) {
+        Claims claims = tokenService.getRefreshClaims(token);
+        String username = claims.getSubject();
+
+        // Удаляем токен из хранения
+        refreshTokenStorage.remove(username);
+    }
+
 }
