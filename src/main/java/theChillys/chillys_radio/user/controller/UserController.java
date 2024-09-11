@@ -27,5 +27,10 @@ public class UserController {
     public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
         return service.getUsersFavoriteStations(userId);
     }
+
+    @PostMapping("/users/my-votes")
+    public boolean setLike(Long userId, Long stationId){
+
+    }
 }
 
