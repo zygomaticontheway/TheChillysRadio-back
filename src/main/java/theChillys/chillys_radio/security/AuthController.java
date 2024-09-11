@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import theChillys.chillys_radio.user.controller.UserController;
+import theChillys.chillys_radio.user.dto.UserRequestDto;
+import theChillys.chillys_radio.user.dto.UserResponseDto;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,4 +31,12 @@ public class AuthController {
     public TokenResponseDto getNewAccessToken(@RequestBody RefreshRequestDto dto){
         return service.getNewAccessToken(dto.getRefreshToken());
     }
+
+    @PostMapping("/register")
+    public UserResponseDto registrationUser(@RequestBody UserRequestDto user ) {
+        UserController controller = new UserController();
+        return controller.createUser(user);
+
+    }
+
 }
