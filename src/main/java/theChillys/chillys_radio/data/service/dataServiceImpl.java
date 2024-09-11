@@ -43,7 +43,7 @@ public class dataServiceImpl implements IDataService{
 
 
     @Override
-    public List<DataResponseDto> getAllStations() {
+    public ModifyResponseDto getAllStations() {
 
         /*
  		// запрос зашел сюда
@@ -78,11 +78,11 @@ public class dataServiceImpl implements IDataService{
          */
 
 
-        return List.of();
+        return null;
     }
 
     @Override
-    public DataResponseDto getStationByStationuuid(String stationuuid) {
+    public ModifyResponseDto getStationByStationuuid(String stationuuid) {
         return null;
     }
 

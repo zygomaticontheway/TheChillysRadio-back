@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import theChillys.chillys_radio.data.dto.ModifyResponseDto;
+import theChillys.chillys_radio.data.service.IDataService;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
@@ -34,6 +36,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
     private final IStationRepository stationRepository;
+    private final IDataService dataService;
 //  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
@@ -62,21 +65,25 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 
     @Override
-    public boolean setLike(Long userId, Long stationId) {
+    public boolean setLike(String stationuuid, String vote) {
+        ModifyResponseDto stationResponse = dataService.getStationByStationuuid(stationuuid);
 
-        User user = findUserById(userId);
-        Station station = stationRepository.findById(stationId)
-                .orElseThrow(() ->
-                        new RuntimeException("Station not found with id: " + stationId));
-
-        if (user.getFavorites().contains(station)) {
+        if (!stationResponse.isOk()) {
+            System.out.println("Radio station not found: " + stationuuid);
             return false;
         }
 
-        user.getFavorites().add(station);
-        repository.save(user);
-
-        return true;
+        if ("1".equals(vote)) {
+            ModifyResponseDto voteResponse = dataService.postVoteStation(stationuuid);
+            if (!voteResponse.isOk()) {
+                System.out.println("Error while voting: " + voteResponse.getMessage());
+                return false;
+            }
+            System.out.println("Like successfully placed for station: " + voteResponse.getName());
+            return true;
+        }
+        System.out.println("Invalid vote value: " + vote);
+        return false;
     }
 
 
@@ -90,7 +97,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public List<UserResponseDto> getUsers() {
         List<User> customers = repository.findAll();
 
-        return customers.stream().map(c->mapper.map(c, UserResponseDto.class)).toList();
+        return customers.stream().map(c -> mapper.map(c, UserResponseDto.class)).toList();
     }
 
     @Override
@@ -119,22 +126,21 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public UserResponseDto setAdminRole(String username) {
         // TODO Реализуйте логику назначения роли администратора
-        
-      return null;
-    }
 
+        return null;
+    }
 
 
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
-        
-      return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
+
+        return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
     }
 
     @Override
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
         List<User> users = repository.findByNameContainingOrEmailContaining(name, email);
-        
+
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
@@ -142,8 +148,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     //как spring получает User по логину
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        
-      return repository.findUserByName(name)
+
+        return repository.findUserByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
 }
