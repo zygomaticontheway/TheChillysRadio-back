@@ -6,8 +6,8 @@ import theChillys.chillys_radio.data.dto.ModifyResponseDto;
 import java.util.List;
 
 public interface IDataService {
-    List<DataResponseDto> getAllStations();
-    DataResponseDto getStationByStationuuid(String stationuuid);
+    ModifyResponseDto getAllStations();
+    ModifyResponseDto getStationByStationuuid(String stationuuid);
     ModifyResponseDto postClickStation(String stationuuid);
     ModifyResponseDto postVoteStation(String stationuuid);
 }
