@@ -4,10 +4,7 @@ import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import theChillys.chillys_radio.user.controller.UserController;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
@@ -22,6 +19,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserServiceImpl service;
+
+
 
     @PostMapping("/login")
     public TokenResponseDto login(@RequestBody UserLoginDto user) {
@@ -43,10 +42,9 @@ public class AuthController {
     public TokenResponseDto logout(@RequestHeader("Authorization") String authHeader) {
 
         String token = authHeader.substring(7);
-        service.logout(token);
-
+        authService.logout(token);
         return new TokenResponseDto(null, null);
-
+    }
 
     @PostMapping("/register")
     public UserResponseDto registrationUser(@RequestBody UserRequestDto user ) {

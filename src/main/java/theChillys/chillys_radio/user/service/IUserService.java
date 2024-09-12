@@ -21,7 +21,7 @@ public interface IUserService {
 
     UserResponseDto getUsersFavoriteStations(Long userId);
     boolean setLike(String stationuuid, String vote);
-    boolean logOut(Long userId);
+
 
     UserResponseDto setAdminRole(String username);
 

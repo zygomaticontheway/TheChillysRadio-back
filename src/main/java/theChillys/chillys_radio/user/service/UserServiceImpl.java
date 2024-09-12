@@ -85,12 +85,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 
     @Override
-    public boolean logOut(Long userId) {
-
-        return false;
-    }
-
-    @Override
     public List<UserResponseDto> getUsers() {
         List<User> customers = repository.findAll();
 
