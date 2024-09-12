@@ -1,7 +1,6 @@
 package theChillys.chillys_radio.user.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
@@ -15,6 +14,10 @@ public interface IUserService {
     UserResponseDto createUser(UserRequestDto dto);
 
     List<UserResponseDto> getUsers();
+
+    UserResponseDto updateUser(Long userId, UserRequestDto dto);
+
+    UserResponseDto changePassword(Long userId, String newPassword);
 
     Optional<UserResponseDto> getUserById(Long id);
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);

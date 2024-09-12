@@ -1,5 +1,6 @@
 package theChillys.chillys_radio.user.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -118,8 +119,31 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public UserResponseDto setAdminRole(String username) {
         // TODO Реализуйте логику назначения роли администратора
 
-        return null;
+
+    @Override
+    @Transactional
+    public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
+        User user = mapper.map(dto, User.class);
+        user.setId(userId);
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+
+        User savedUser = repository.save(user);
+        return mapper.map(savedUser, UserResponseDto.class);
+
     }
+
+    @Override
+    @Transactional
+    public UserResponseDto changePassword(Long userId, String newPassword) {
+        User user = findUserById(userId);
+        String encodedPass = encoder.encode(newPassword);
+        user.setPassword(encodedPass);
+        User saved = repository.save(user);
+
+        return mapper.map(saved, UserResponseDto.class);
+    }
+
 
 
     @Override
