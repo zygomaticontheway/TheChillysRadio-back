@@ -118,7 +118,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public UserResponseDto setAdminRole(String username) {
         // TODO Реализуйте логику назначения роли администратора
-
+        return null;
+    }
 
     @Override
     @Transactional
