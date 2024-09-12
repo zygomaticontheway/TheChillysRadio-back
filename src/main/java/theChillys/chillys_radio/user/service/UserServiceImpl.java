@@ -2,7 +2,6 @@ package theChillys.chillys_radio.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,17 +14,15 @@ import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
-import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
