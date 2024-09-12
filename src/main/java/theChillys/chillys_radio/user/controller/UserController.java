@@ -30,16 +30,15 @@ public class UserController {
         return service.getUsers();
     }
 
-    @GetMapping("/{userId}/favorites")
+    @GetMapping("/users/{userId}/favorites")
     public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
         return service.getUsersFavoriteStations(userId);
     }
 
-    @PostMapping("/{userId}/my-votes/{stationId}")
-    public boolean setLike(
-            @PathVariable Long userId,
-            @PathVariable Long stationId) {
-        return service.setLike(userId, stationId);
+    @PostMapping("/users/my-votes")
+    public boolean setLike(@RequestBody String stationuuid,
+                           @RequestBody String vote) {
+        return service.setLike(stationuuid, vote);
     }
 
 

@@ -14,6 +14,7 @@ import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.IUserService;
 import theChillys.chillys_radio.user.service.UserServiceImpl;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -36,6 +37,15 @@ public class AuthController {
     public TokenResponseDto getNewAccessToken(@RequestBody RefreshRequestDto dto){
         return authService.getNewAccessToken(dto.getRefreshToken());
     }
+
+
+    @GetMapping("/logout")
+    public TokenResponseDto logout(@RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.substring(7);
+        service.logout(token);
+
+        return new TokenResponseDto(null, null);
 
 
     @PostMapping("/register")

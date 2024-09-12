@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import theChillys.chillys_radio.data.dto.ModifyResponseDto;
+import theChillys.chillys_radio.data.service.IDataService;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
@@ -31,6 +33,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
     private final IStationRepository stationRepository;
+    private final IDataService dataService;
 //  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
@@ -59,21 +62,25 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 
     @Override
-    public boolean setLike(Long userId, Long stationId) {
+    public boolean setLike(String stationuuid, String vote) {
+        ModifyResponseDto stationResponse = dataService.getStationByStationuuid(stationuuid);
 
-        User user = findUserById(userId);
-        Station station = stationRepository.findById(stationId)
-                .orElseThrow(() ->
-                        new RuntimeException("Station not found with id: " + stationId));
-
-        if (user.getFavorites().contains(station)) {
+        if (!stationResponse.isOk()) {
+            System.out.println("Radio station not found: " + stationuuid);
             return false;
         }
 
-        user.getFavorites().add(station);
-        repository.save(user);
-
-        return true;
+        if ("1".equals(vote)) {
+            ModifyResponseDto voteResponse = dataService.postVoteStation(stationuuid);
+            if (!voteResponse.isOk()) {
+                System.out.println("Error while voting: " + voteResponse.getMessage());
+                return false;
+            }
+            System.out.println("Like successfully placed for station: " + voteResponse.getName());
+            return true;
+        }
+        System.out.println("Invalid vote value: " + vote);
+        return false;
     }
 
 
