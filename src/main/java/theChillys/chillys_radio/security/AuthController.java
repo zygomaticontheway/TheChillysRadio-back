@@ -2,13 +2,9 @@ package theChillys.chillys_radio.security;
 
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
-import theChillys.chillys_radio.user.controller.UserController;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
-import theChillys.chillys_radio.user.service.IUserService;
 import theChillys.chillys_radio.user.service.UserServiceImpl;
 
 
