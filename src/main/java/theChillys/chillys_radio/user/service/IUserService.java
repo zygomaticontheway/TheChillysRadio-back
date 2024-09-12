@@ -15,6 +15,10 @@ public interface IUserService {
 
     List<UserResponseDto> getUsers();
 
+    UserResponseDto updateUser(Long userId, UserRequestDto dto);
+
+    UserResponseDto changePassword(Long userId, String newPassword);
+
     Optional<UserResponseDto> getUserById(Long id);
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
