@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor //делает конструктор только для final полей, для остальных не делает
 @Service
 public class StationServiceImpl implements IStationService {
+
     private static final Logger logger = LoggerFactory.getLogger(StationServiceImpl.class);
     private final ModelMapper mapper;
     private final IStationRepository repository;
@@ -26,7 +27,9 @@ public class StationServiceImpl implements IStationService {
 
     @Override
     public List<StationResponseDto> getAllStationsByTopClicks() {
+
         logger.debug("Fetching stations by top clicks");
+
         List<Station> stations = repository.findAllByOrderByClickcountDesc();
         return stations.stream()
                 .map(this::convertToDto)
@@ -35,7 +38,9 @@ public class StationServiceImpl implements IStationService {
 
     @Override
     public List<StationResponseDto> getAllStationsByTopVotes() {
+
         logger.debug("Fetching stations by top votes");
+
         List<Station> stations = repository.findAllByOrderByVotesDesc();
         return stations.stream()
                 .map(this::convertToDto)
@@ -43,7 +48,9 @@ public class StationServiceImpl implements IStationService {
     }
     @Override
     public StationResponseDto getStationById(String stationuuid) {
-        logger.debug("Fetching stations");
+
+        logger.debug("Fetching station");
+
         Station station = repository.findByStationuuid(stationuuid)
                 .orElseThrow(() -> new StationNotFoundException("Station not found with uuid: " + stationuuid));
         return convertToDto(station);
