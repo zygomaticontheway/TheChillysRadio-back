@@ -29,6 +29,12 @@ public class UserController {
     public List<UserResponseDto> getUsers() {
         return service.getUsers();
     }
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello";
+    }
+
+
 
     @GetMapping("/users/{userId}/favorites")
     public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {

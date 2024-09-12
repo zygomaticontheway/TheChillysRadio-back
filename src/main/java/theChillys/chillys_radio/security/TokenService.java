@@ -85,6 +85,7 @@ public class TokenService {
                     .verifyWith(key)
                     .build()
                     .parseSignedClaims(token);
+//            System.out.println("Check token validation");
             return true;
 
         } catch (Exception e) {
@@ -128,6 +129,7 @@ public class TokenService {
         for (LinkedHashMap<String, String> roleEntry : rolesList){
             String roleTitle = roleEntry.get("authority"); //так называется ключ, надо просто запомнить
             Role role = roleRepository.findRoleByTitle(roleTitle);
+            System.out.println("Роль : " + role.getTitle());
             if(role != null){
                 roles.add(role);
             }
