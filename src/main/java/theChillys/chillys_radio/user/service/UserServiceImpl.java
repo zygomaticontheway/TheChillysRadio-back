@@ -3,7 +3,6 @@ package theChillys.chillys_radio.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,9 +13,9 @@ import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
-import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
@@ -143,9 +142,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         User user = findUserById(userId);
         String encodedPass = encoder.encode(newPassword);
         user.setPassword(encodedPass);
-        repository.save(user);
+        User saved = repository.save(user);
 
-        return null;
+        return mapper.map(saved, UserResponseDto.class);
     }
 
 
