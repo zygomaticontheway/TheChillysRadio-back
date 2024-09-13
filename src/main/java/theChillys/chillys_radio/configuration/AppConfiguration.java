@@ -12,6 +12,15 @@ public class AppConfiguration {
     public ModelMapper modelMapper(){
       return new ModelMapper();
     }
+
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder().build();
+    }
 }
 
 

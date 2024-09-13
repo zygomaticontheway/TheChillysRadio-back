@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+import theChillys.chillys_radio.station.service.IStationService;
 import theChillys.chillys_radio.user.dto.ChangePasswordDto;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
@@ -19,7 +20,7 @@ public class UserController {
 
     @Autowired
     @Qualifier("userServiceImpl")
-    private IUserService service;
+    private final IUserService service;
 
     @PostMapping("/users")
     public UserResponseDto createUser(@RequestBody UserRequestDto dto) {
@@ -48,13 +49,6 @@ public class UserController {
     public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
         return service.getUsersFavoriteStations(userId);
     }
-
-    @PostMapping("/users/my-votes")
-    public boolean setLike(@RequestBody String stationuuid,
-                           @RequestBody String vote) {
-        return service.setLike(stationuuid, vote);
-    }
-
 
 }
 
