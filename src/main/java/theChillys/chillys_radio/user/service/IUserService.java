@@ -23,10 +23,8 @@ public interface IUserService {
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
     UserResponseDto getUsersFavoriteStations(Long userId);
-    boolean setLike(String stationuuid, String vote);
 
-
-    UserResponseDto setAdminRole(String username);
+    UserResponseDto setAdminRole(String email);
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 

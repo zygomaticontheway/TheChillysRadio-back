@@ -5,11 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+import theChillys.chillys_radio.data.dto.ModifyResponseDto;
+import theChillys.chillys_radio.exception.StationNotFoundException;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
+import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.service.IStationService;
 
@@ -22,9 +23,10 @@ import java.util.List;
 public class StationController {
 
     @Autowired
-    private IStationService service;
+    private final IStationService service;
 
-    @GetMapping("/stations/top-clics")
+
+    @GetMapping("/stations/top-clicks")
     public ResponseEntity<List<StationResponseDto>> getTopClickStations() {
         return ResponseEntity.ok(service.getAllStationsByTopClicks());
     }
@@ -34,8 +36,22 @@ public class StationController {
         return ResponseEntity.ok(service.getAllStationsByTopVotes());
     }
 
-    /*@GetMapping("/{id}")
-    public ResponseEntity<StationResponseDto> getStationById(@PathVariable String stationuuid) {
+    @GetMapping("/stations/{id}")
+    public ResponseEntity<StationResponseDto> getStationById(@PathVariable("id") String stationuuid) {
         return ResponseEntity.ok(service.getStationById(stationuuid));
-    }*/
+    }
+    @ExceptionHandler(StationNotFoundException.class)
+    public ResponseEntity<String> handleStationNotFound(StationNotFoundException ex) {
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/stations/{id}/stream")
+    public StationUrlDto getStreamUrl (@PathVariable String stationuuid){
+        return service.getStreamUrl(stationuuid);
+    }
+
+    @PostMapping("/stations/{id}/vote")
+    public Mono<ModifyResponseDto> vote(@PathVariable (name = "id") String stationuuid) {
+        return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
+    }
 }

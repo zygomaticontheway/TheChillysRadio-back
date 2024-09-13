@@ -8,8 +8,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.Disposable;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
 import theChillys.chillys_radio.data.service.IDataService;
+import theChillys.chillys_radio.exception.StationNotFoundException;
+import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
@@ -19,6 +22,7 @@ import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +37,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IRoleService roleService;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
-    private final IStationRepository stationRepository;
-    private final IDataService dataService;
 //  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
@@ -60,30 +62,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 favoriteStationsDto,
                 roles);
     }
-
-
-    @Override
-    public boolean setLike(String stationuuid, String vote) {
-        ModifyResponseDto stationResponse = dataService.getStationByStationuuid(stationuuid);
-
-        if (!stationResponse.isOk()) {
-            System.out.println("Radio station not found: " + stationuuid);
-            return false;
-        }
-
-        if ("1".equals(vote)) {
-            ModifyResponseDto voteResponse = dataService.postVoteStation(stationuuid);
-            if (!voteResponse.isOk()) {
-                System.out.println("Error while voting: " + voteResponse.getMessage());
-                return false;
-            }
-            System.out.println("Like successfully placed for station: " + voteResponse.getName());
-            return true;
-        }
-        System.out.println("Invalid vote value: " + vote);
-        return false;
-    }
-
 
     @Override
     public List<UserResponseDto> getUsers() {
@@ -116,9 +94,21 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserResponseDto setAdminRole(String username) {
-        // TODO Реализуйте логику назначения роли администратора
-        return null;
+    @Transactional
+    public UserResponseDto setAdminRole(String email) {
+
+        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+
+        if (!user.getRoles().contains("ADMIN")) {
+            Set<Role> roles = user.getRoles();
+            roles.add(roleService.getRoleByTitle("ADMIN"));
+            user.setRoles(roles);
+            repository.save(user);
+        } else {
+            throw new RuntimeException("User is already admin");
+        }
+
+        return mapper.map(user, UserResponseDto.class);
     }
 
     @Override
@@ -146,7 +136,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
 
-
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
 
@@ -163,10 +152,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     //как spring получает User по логину
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        return repository.findUserByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+        return repository.findUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + email + " not found"));
     }
 }
 
