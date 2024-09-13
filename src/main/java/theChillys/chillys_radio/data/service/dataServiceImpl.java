@@ -65,6 +65,7 @@ public class dataServiceImpl implements IDataService {
                     return Mono.just(new ModifyResponseDto(false, errorMessage, 0L));
                 });
     }
+
     private Mono<StationResponseDto> saveStationToDatabase(DataResponseDto response) {
         return Mono.fromCallable(() -> {
             Station station = mapper.map(response, Station.class);
@@ -73,49 +74,48 @@ public class dataServiceImpl implements IDataService {
         });
     }
 
-
     private Mono<Long> saveListStationsToDatabase(List<DataResponseDto> response) {
         return Flux.fromIterable(response)
                 .flatMap(this::saveStationToDatabase)
                 .count();
     }
 
-/*
-*** to call this method use: ***
+    /*
+    *** to call this method use: ***
 
-String stationUuid = "12345-67890";
-dataService.getStationByStationuuid(stationUuid)
-    .subscribe(
-        result -> {
-            if (result.isSuccess()) {
-                System.out.println(result.getMessage());
-                System.out.println("Modified items: " + result.getModifiedItems());
-            } else {
-                System.err.println("Error: " + result.getMessage());
-            }
-        },
-        error -> System.err.println("Unexpected error: " + error.getMessage())
-    );
- */
-@Override
-public Mono<ModifyResponseDto> getStationByStationuuid(String stationuuid) {
-    return webClient.get()
-            .uri(getStationByStationuuidUrl + stationuuid)
-            .retrieve()
-            .bodyToMono(DataResponseDto.class)
-            .flatMap(response -> {
-                Station station = mapper.map(response, Station.class);
-                return Mono.fromCallable(() -> repository.save(station));
-            })
-            .map(savedStation -> {
-                String message = "Station retrieved and saved: " + savedStation.getName();
-                return new ModifyResponseDto(true, message, 1L);
-            })
-            .onErrorResume(e -> {
-                String errorMessage = "Error occurred while fetching station: " + e.getMessage();
-                return Mono.just(new ModifyResponseDto(false, errorMessage, 0L));
-            });
-}
+    String stationUuid = "12345-67890";
+    dataService.getStationByStationuuid(stationUuid)
+        .subscribe(
+            result -> {
+                if (result.isSuccess()) {
+                    System.out.println(result.getMessage());
+                    System.out.println("Modified items: " + result.getModifiedItems());
+                } else {
+                    System.err.println("Error: " + result.getMessage());
+                }
+            },
+            error -> System.err.println("Unexpected error: " + error.getMessage())
+        );
+     */
+    @Override
+    public Mono<ModifyResponseDto> getStationByStationuuid(String stationuuid) {
+        return webClient.get()
+                .uri(getStationByStationuuidUrl + stationuuid)
+                .retrieve()
+                .bodyToMono(DataResponseDto.class)
+                .flatMap(response -> {
+                    Station station = mapper.map(response, Station.class);
+                    return Mono.fromCallable(() -> repository.save(station));
+                })
+                .map(savedStation -> {
+                    String message = "Station retrieved and saved: " + savedStation.getName();
+                    return new ModifyResponseDto(true, message, 1L);
+                })
+                .onErrorResume(e -> {
+                    String errorMessage = "Error occurred while fetching station: " + e.getMessage();
+                    return Mono.just(new ModifyResponseDto(false, errorMessage, 0L));
+                });
+    }
 
     @Override
     public Mono<ModifyResponseDto> postClickStation(String stationuuid) {
@@ -149,20 +149,4 @@ public Mono<ModifyResponseDto> getStationByStationuuid(String stationuuid) {
                 });
     }
 }
-
-//    @Override
-//    public ModifyResponseDto getStationByStationuuid(String stationuuid) {
-//        return null;
-//    }
-//
-//    @Override
-//    public ModifyResponseDto postClickStation(String stationuuid) {
-//        return null;
-//    }
-//
-//    @Override
-//    public ModifyResponseDto postVoteStation(String stationuuid) {
-//        return null;
-//    }
-
 
