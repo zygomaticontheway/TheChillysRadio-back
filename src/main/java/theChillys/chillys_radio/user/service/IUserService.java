@@ -1,8 +1,8 @@
 package theChillys.chillys_radio.user.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.RequestBody;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 
@@ -15,12 +15,16 @@ public interface IUserService {
 
     List<UserResponseDto> getUsers();
 
+    UserResponseDto updateUser(Long userId, UserRequestDto dto);
+
+    UserResponseDto changePassword(Long userId, String newPassword);
+
     Optional<UserResponseDto> getUserById(Long id);
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
     UserResponseDto getUsersFavoriteStations(Long userId);
-    boolean setLike(Long userId, Long stationId);
-    boolean logOut(Long userId);
+    boolean setLike(String stationuuid, String vote);
+
 
     UserResponseDto setAdminRole(String username);
 
