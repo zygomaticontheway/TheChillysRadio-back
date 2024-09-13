@@ -94,6 +94,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserResponseDto setAdminRole(String email) {
 
         User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
