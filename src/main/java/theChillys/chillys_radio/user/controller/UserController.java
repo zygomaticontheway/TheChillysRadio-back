@@ -29,10 +29,10 @@ public class UserController {
     public List<UserResponseDto> getUsers() {
         return service.getUsers();
     }
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello";
-    }
+//    @GetMapping("/hello")
+//    public String hello() {
+//        return "Hello";
+//    }
 
 
 

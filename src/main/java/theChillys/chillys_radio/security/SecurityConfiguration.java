@@ -41,7 +41,7 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll() //.hasAnyRole("USER", "ADMIN") //hasRole("ADMIN") = разрешить только пользователям с ролью ADMIN
                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/hello").hasRole("ADMIN")
+//                .requestMatchers(HttpMethod.GET, "/api/hello").hasRole("ADMIN")
                 .anyRequest().authenticated() //все остальные запросы доступны только авторизованным пользователям
                 ).httpBasic(AbstractHttpConfigurer::disable)//отключаем basic authorisation
                 .addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
