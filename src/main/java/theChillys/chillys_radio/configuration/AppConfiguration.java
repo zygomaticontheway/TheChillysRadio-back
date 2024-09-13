@@ -22,3 +22,5 @@ public class AppConfiguration {
         return WebClient.builder().build();
     }
 }
+
+
