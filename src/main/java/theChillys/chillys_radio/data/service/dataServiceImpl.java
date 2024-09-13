@@ -1,6 +1,5 @@
 package theChillys.chillys_radio.data.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,6 @@ import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 //http://all.api.radio-browser.info/json/stations/byuuid/{searchterm}
@@ -80,23 +77,6 @@ public class dataServiceImpl implements IDataService {
                 .count();
     }
 
-    /*
-    *** to call this method use: ***
-
-    String stationUuid = "12345-67890";
-    dataService.getStationByStationuuid(stationUuid)
-        .subscribe(
-            result -> {
-                if (result.isSuccess()) {
-                    System.out.println(result.getMessage());
-                    System.out.println("Modified items: " + result.getModifiedItems());
-                } else {
-                    System.err.println("Error: " + result.getMessage());
-                }
-            },
-            error -> System.err.println("Unexpected error: " + error.getMessage())
-        );
-     */
     @Override
     public Mono<ModifyResponseDto> getStationByStationuuid(String stationuuid) {
         return webClient.get()
@@ -108,7 +88,7 @@ public class dataServiceImpl implements IDataService {
                     return Mono.fromCallable(() -> repository.save(station));
                 })
                 .map(savedStation -> {
-                    String message = "Station retrieved and saved: " + savedStation.getName();
+                    String message = "Station retrieved and saved: " + savedStation.getStationuuid();
                     return new ModifyResponseDto(true, message, 1L);
                 })
                 .onErrorResume(e -> {
