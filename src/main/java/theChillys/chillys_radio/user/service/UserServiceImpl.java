@@ -114,10 +114,21 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     @Transactional
     public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
-        User user = mapper.map(dto, User.class);
+        User user = findUserById(userId);
         user.setId(userId);
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
+
+        if (dto.getName() != null) {
+            user.setName(dto.getName());
+        }
+        if (dto.getEmail() != null) {
+            user.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null) {
+            user.setPassword(encoder.encode(dto.getPassword()));
+        }
+        user.setRoles(user.getRoles());
+        user.setFavorites(user.getFavorites());
+
 
         User savedUser = repository.save(user);
         return mapper.map(savedUser, UserResponseDto.class);
