@@ -25,7 +25,6 @@ public class TokenFilter extends GenericFilterBean {
                          FilterChain filterChain //цепочка фильтров, выполняемых после моего
     ) throws IOException, ServletException {
 
-        filterChain.doFilter(request, response);
 
         //получаем токен
         String token = getTokenFromRequest((HttpServletRequest) request);
@@ -44,6 +43,8 @@ public class TokenFilter extends GenericFilterBean {
 
             //кладем вышеустановленное в контекст
             SecurityContextHolder.getContext().setAuthentication(authInfo);
+
+            filterChain.doFilter(request, response);
         }
     }
 
