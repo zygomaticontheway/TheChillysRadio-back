@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface IStationRepository extends JpaRepository<Station, Long> {
 
+    Optional<Object> findByUuid(String stationUuid);
 }

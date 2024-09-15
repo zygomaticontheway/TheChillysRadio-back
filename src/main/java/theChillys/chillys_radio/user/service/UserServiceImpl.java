@@ -119,7 +119,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public UserResponseDto setAdminRole(String username) {
         // TODO Реализуйте логику назначения роли администратора
-        
+
       return null;
     }
 
@@ -127,14 +127,14 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
-        
+
       return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
     }
 
     @Override
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
         List<User> users = repository.findByNameContainingOrEmailContaining(name, email);
-        
+
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
@@ -142,10 +142,31 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     //как spring получает User по логину
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        
+
       return repository.findUserByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
+
+    @Override
+    public boolean toggleFavoriteStation(Long userId, String stationUuid) {
+        User user = findUserById(userId);
+        Object station = stationRepository.findByUuid(stationUuid)
+                .orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationUuid));
+
+        if (user.getFavorites().contains(station)) {
+
+            user.getFavorites().remove(station);
+            repository.save(user);
+            return false;
+        } else {
+            user.getFavorites().add((Station) station);
+            repository.save(user);
+            return true;
+        }
+    }
+
+
+
 }
 
 
