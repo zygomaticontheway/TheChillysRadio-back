@@ -193,7 +193,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public boolean toggleFavoriteStation(Long userId, String stationUuid) {
         User user = findUserById(userId);
-        Object station = stationRepository.findByStationuuid(stationUuid)
+        Station station = stationRepository.findByStationuuid(stationUuid)
                 .orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationUuid));
 
         if (user.getFavorites().contains(station)) {
@@ -202,7 +202,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             repository.save(user);
             return false;
         } else {
-            user.getFavorites().add((Station) station);
+            user.getFavorites().add(station);
             repository.save(user);
             return true;
         }
