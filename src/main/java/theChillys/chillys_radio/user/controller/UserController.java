@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-import theChillys.chillys_radio.station.service.IStationService;
 import theChillys.chillys_radio.user.dto.ChangePasswordDto;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.IUserService;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -44,11 +44,16 @@ public class UserController {
 
     }
 
-  
+
     @GetMapping("/users/{userId}/favorites")
     public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
         return service.getUsersFavoriteStations(userId);
     }
 
+    @GetMapping("/users/my-profile")
+    public UserResponseDto getUserProfile(Principal principal) {
+        String name = principal.getName();
+        return service.getUserResponseDtoByName(name);
+    }
 }
 

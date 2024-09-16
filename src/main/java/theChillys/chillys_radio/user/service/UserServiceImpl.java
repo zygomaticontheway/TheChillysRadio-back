@@ -8,16 +8,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import reactor.core.Disposable;
-import theChillys.chillys_radio.data.dto.ModifyResponseDto;
-import theChillys.chillys_radio.data.service.IDataService;
-import theChillys.chillys_radio.exception.StationNotFoundException;
 import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
+import theChillys.chillys_radio.station.dto.StationRequestDto;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
-import theChillys.chillys_radio.station.repository.IStationRepository;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.entity.User;
@@ -28,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -150,12 +147,34 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
 
-    //как spring получает User по логину
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserResponseDto getUserResponseDtoByName(String name) {
+        Optional<User> userOptional = repository.findUserByName(name);
 
-        return repository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + email + " not found"));
+        if (userOptional.isPresent()) {
+
+            UserResponseDto dto = new UserResponseDto();
+            dto.setId(userOptional.get().getId());
+            dto.setName(userOptional.get().getName());
+            dto.setEmail(userOptional.get().getEmail());
+            List<StationResponseDto> favoriteStationDTOList = userOptional.get().getFavorites().stream()
+                    .map(station -> new StationResponseDto())
+                            .toList();
+            dto.setFavorites(favoriteStationDTOList);
+            dto.setRoles(userOptional.get().getRoles());
+
+            return dto;
+
+        } else {
+            throw new UserNotFoundException("User with name " + name + " not found");
+        }
+    }
+
+    //как spring получает User по логину - логин - это name!
+    @Override
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+
+        return repository.findUserByEmail(name)
+                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
 }
 
