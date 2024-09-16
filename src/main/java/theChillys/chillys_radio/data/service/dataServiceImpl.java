@@ -40,8 +40,8 @@ public class dataServiceImpl implements IDataService {
     private final WebClient webClient;
     private final String getAllStationsUrl = "http://all.api.radio-browser.info/json/stations";
     private final String getStationByStationuuidUrl = "http://all.api.radio-browser.info/json/stations/byuuid/";//+ stationuuid
-    private final String postClickStationUrl = "http://all.api.radio-browser.info/json/stations/byuuid/"; //+ stationuuid
-    private final String postVoteStationUrl = "http://all.api.radio-browser.info/json/url/"; //+ stationuuid
+    private final String postClickStationUrl = "http://all.api.radio-browser.info/json/url/"; //+ stationuuid
+    private final String postVoteStationUrl = "http://all.api.radio-browser.info/json/vote/"; //+ stationuuid
     private final IStationRepository repository;
 
 

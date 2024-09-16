@@ -42,7 +42,7 @@ public class UserController {
   
     @GetMapping("/users/{id}")
      public Optional<UserResponseDto> getUserById(@PathVariable(name="id") Long userId) {
-        return service.getUserById(Long.valueOf(String.valueOf(id)));
+        return service.getUserById(userId);
     }
   /*
   TODO
