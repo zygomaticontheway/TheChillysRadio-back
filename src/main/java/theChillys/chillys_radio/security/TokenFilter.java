@@ -25,12 +25,12 @@ public class TokenFilter extends GenericFilterBean {
                          FilterChain filterChain //цепочка фильтров, выполняемых после моего
     ) throws IOException, ServletException {
 
-        // filterChain.doFilter(request, response);
+
         //получаем токен
         String token = getTokenFromRequest((HttpServletRequest) request);
 
         //если токен валидный, то пропускаем запрос
-        if(token != null && service.validateAccessToken(token)){
+        if (token != null && service.validateAccessToken(token)) {
 
             // берем инфу из токена
             Claims claims = service.getAccessClaims(token);
@@ -44,20 +44,19 @@ public class TokenFilter extends GenericFilterBean {
             //кладем вышеустановленное в контекст
             SecurityContextHolder.getContext().setAuthentication(authInfo);
 
-            filterChain.doFilter(request, response); // 500
+            filterChain.doFilter(request, response);
         }
-
     }
 
     //вспомогательный метод для доставания токена из request
-    private String getTokenFromRequest(HttpServletRequest request){
+    private String getTokenFromRequest(HttpServletRequest request) {
 
         String token = request.getHeader("Authorization");
 
         //токен придет не в чистом виде, а в виде Bearer ouoeyweiywqojkzxclXLZJKlnc...
         //нужно обрезать лишнее и извлечь токен
-        if (token != null && token.startsWith("Bearer ")){
-            return  token.substring(7);
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7);
         }
         return null;
     }

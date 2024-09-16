@@ -28,4 +28,6 @@ public interface IUserService {
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 
+    UserResponseDto getUserResponseDtoByName(String name);
+
 }
