@@ -38,7 +38,7 @@ public class StationController {
 
     @GetMapping("/stations/{id}")
     public ResponseEntity<StationResponseDto> getStationById(@PathVariable("id") String stationuuid) {
-        return ResponseEntity.ok(service.getStationById(stationuuid));
+        return ResponseEntity.ok(service.getStationByStationuuid(stationuuid));
     }
     @ExceptionHandler(StationNotFoundException.class)
     public ResponseEntity<String> handleStationNotFound(StationNotFoundException ex) {

@@ -17,7 +17,7 @@ public interface IStationService {
 
     List<StationResponseDto> getAllStationsByTopVotes();
 
-    StationResponseDto getStationById(String stationuuid);
+    StationResponseDto getStationByStationuuid(String stationuuid);
 
     Mono<ModifyResponseDto> vote(String stationuuid);
     Mono<ModifyResponseDto> click(String stationuuid);
