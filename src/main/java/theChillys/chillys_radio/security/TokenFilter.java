@@ -44,8 +44,9 @@ public class TokenFilter extends GenericFilterBean {
             //кладем вышеустановленное в контекст
             SecurityContextHolder.getContext().setAuthentication(authInfo);
 
-            filterChain.doFilter(request, response);
+
         }
+        filterChain.doFilter(request, response);
     }
 
     //вспомогательный метод для доставания токена из request
