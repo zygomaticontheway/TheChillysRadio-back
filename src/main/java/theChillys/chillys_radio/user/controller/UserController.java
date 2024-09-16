@@ -87,6 +87,15 @@ public class UserController {
         String name = principal.getName();
         return service.getUserResponseDtoByName(name);
     }
+    @GetMapping("/users")
+    public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) String email) {
+        if ((name == null || name.isEmpty()) && (email == null || email.isEmpty())) {
+            return service.getUsers();
+        } else {
+            return service.findUsersByNameOrEmail(name, email);
+        }
+    }
 
 }
 

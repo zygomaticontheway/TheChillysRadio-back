@@ -1,9 +1,11 @@
 package theChillys.chillys_radio.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,14 +85,29 @@ public class TokenService {
             //настройка разборщика токена = получи claims
             Jwts.parser()
                     .verifyWith(key)
-                    .build()
+                   .build()
                     .parseSignedClaims(token);
             return true;
 
         } catch (Exception e) {
             return false;
-        }
+       }
     }
+
+  //  private boolean validateToken(String token, SecretKey key) {
+   //     try {
+   //         Jwts.parserBuilder()
+   //                 .setSigningKey(key)
+   //                 .build()
+   //                 .parseClaimsJws(token);
+  //          return true;
+   //     } catch (Exception e) {
+   //         return false;
+   //     }
+  //  }
+
+
+
 
     public boolean validateAccessToken(String accessToken){
         return validateToken(accessToken, accessKey);
@@ -103,10 +120,20 @@ public class TokenService {
     private Claims getClaims (String token, SecretKey key){
         return Jwts.parser()
                 .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+               .build()
+               .parseSignedClaims(token)
+              //.getPayload();
+              .getBody();
     }
+
+   // private Claims getClaims(String token, SecretKey key) {
+   //     return Jwts.parserBuilder()
+   //             .setSigningKey(key)
+    //            .build()
+    //            .parseClaimsJws(token)
+    //            .getBody();
+  //  }
+
 
     public Claims getAccessClaims(String accessToken){
         return getClaims(accessToken, accessKey);
@@ -115,6 +142,19 @@ public class TokenService {
     public Claims getRefreshClaims(String refreshToken){
         return getClaims(refreshToken, refreshKey);
     }
+
+  //  public Claims getRefreshClaims(String refreshToken) {
+   //     try {
+   //         return Jwts.parserBuilder()
+   //                 .setSigningKey(refreshKey)  // Исправлено на refreshKey
+   //                 .build()
+   //                 .parseClaimsJws(refreshToken)
+   //                 .getBody();
+  //      } catch (JwtException e) {
+  //          throw new SignatureException("Invalid JWT signature", e);
+   //     }
+  //  }
+
 
     public AuthInfo mapClaimsToAuthInfo (Claims claims){
 
