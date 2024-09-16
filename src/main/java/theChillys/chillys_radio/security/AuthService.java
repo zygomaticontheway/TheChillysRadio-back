@@ -64,12 +64,30 @@ public class AuthService {
 
     }
 
-//    public void logout(String token) {
-//        Claims claims = tokenService.getRefreshClaims(token);
-//        String username = claims.getSubject();
-//
-//        // Удаляем токен из хранения
-//        refreshTokenStorage.remove(username);
-//    }
+ //   public void logout(String token) {
+ //       Claims claims = tokenService.getRefreshClaims(token);
+ //      String username = claims.getSubject();
+
+  //      refreshTokenStorage.remove(username);
+   // }
+
+  //  public void logout(String refreshToken) {
+  //      // Проверить валидность refresh-токена
+  //      Claims claims = tokenService.getRefreshClaims(refreshToken);
+
+   //     if (claims != null) {
+            // Извлечь информацию о пользователе из токена
+    //        String userId = claims.getSubject();
+
+            // Удалить refresh-токен пользователя
+     //       refreshTokenStorage.remove(userId);
+
+            // Здесь можно добавить дополнительные действия, например, логирование
+    //        System.out.println("User " + userId + " has logged out.");
+    //    } else {
+    //        throw new IllegalArgumentException("Invalid token");
+    //    }
+  //  }
+
 
 }

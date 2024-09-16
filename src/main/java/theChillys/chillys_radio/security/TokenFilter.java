@@ -44,6 +44,7 @@ public class TokenFilter extends GenericFilterBean {
             //кладем вышеустановленное в контекст
             SecurityContextHolder.getContext().setAuthentication(authInfo);
 
+
         }
         filterChain.doFilter(request, response);
     }
