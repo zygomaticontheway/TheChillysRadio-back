@@ -15,6 +15,8 @@ import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
+import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,6 +107,15 @@ public class StationServiceImpl implements IStationService {
         String urlResolved = repository.findByStationuuid(stationuuid).get().getUrl_resolved();
 
         return new StationUrlDto(urlResolved);
+    }
+
+    @Override
+    public List<StationResponseDto> findStationsByGenreCountryLanguage(String genre, String country, String language) {
+        List<Station> stations = repository.findStationByGenreOrCountryOrLanguage( genre,  country,  language);
+
+        return stations.stream()
+                .map(station -> mapper.map(station,StationResponseDto.class))
+                .toList();
     }
 }
 

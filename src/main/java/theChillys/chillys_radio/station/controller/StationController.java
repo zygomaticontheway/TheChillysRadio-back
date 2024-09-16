@@ -13,6 +13,7 @@ import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.service.IStationService;
+import theChillys.chillys_radio.user.dto.UserResponseDto;
 
 import java.util.List;
 
@@ -54,4 +55,15 @@ public class StationController {
     public Mono<ModifyResponseDto> vote(@PathVariable (name = "id") String stationuuid) {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
+
+    @GetMapping("/stations")
+    public List<UserResponseDto> findStationsByGenreCountryLanguage (@RequestParam(value = "genre", required = false) String genre,
+    @RequestParam(value = "country", required = false) String country,
+    @RequestParam(value = "language", required = false) String language){
+        List<StationResponseDto> stations = service.findStationsByGenreCountryLanguage( genre,country,language);
+        return findStationsByGenreCountryLanguage(genre, country, language);
+
+    }
+
 }
+
