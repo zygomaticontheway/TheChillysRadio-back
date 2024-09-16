@@ -29,31 +29,25 @@ public class UserController {
     @Qualifier("userServiceImpl")
     private final IUserService service;
 
+    @GetMapping("/users")
+    public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) String email) {
+        if ((name == null || name.isEmpty()) && (email == null || email.isEmpty())) {
+            return service.getUsers();
+        } else {
+            return service.findUsersByNameOrEmail(name, email);
+        }
+    }
 
     @PostMapping("/users")
     public UserResponseDto createUser(@RequestBody UserRequestDto dto) {
         return service.createUser(dto);
-    }
-
-    @GetMapping("/users")
-    public List<UserResponseDto> getUsers() {
-        return service.getUsers();
     }
   
     @GetMapping("/users/{id}")
      public Optional<UserResponseDto> getUserById(@PathVariable(name="id") Long userId) {
         return service.getUserById(userId);
     }
-  /*
-  TODO
-  rewrite this endpoint looking in conditions of variables existing
-
-     @GetMapping("/users")
-     public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
-                                                         @RequestParam(required = false) String email) {
-         return service.findUsersByNameOrEmail(name, email);
-     }
-     */
   
      @PostMapping("/users/my-favorites")
      public boolean toggleFavoriteStation(@RequestParam Long userId, @RequestParam String stationUuid) {
@@ -87,15 +81,7 @@ public class UserController {
         String name = principal.getName();
         return service.getUserResponseDtoByName(name);
     }
-    @GetMapping("/users")
-    public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
-                                                        @RequestParam(required = false) String email) {
-        if ((name == null || name.isEmpty()) && (email == null || email.isEmpty())) {
-            return service.getUsers();
-        } else {
-            return service.findUsersByNameOrEmail(name, email);
-        }
-    }
+
 
 }
 

@@ -12,6 +12,7 @@ import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 
@@ -38,7 +39,7 @@ public class dataServiceImpl implements IDataService {
 
     private final ModelMapper mapper;
     private final WebClient webClient;
-    private final String getAllStationsUrl = "http://all.api.radio-browser.info/json/stations";
+    private final String getAllStationsUrl = "http://all.api.radio-browser.info/json/stations?hidebroken=true";
     private final String getStationByStationuuidUrl = "http://all.api.radio-browser.info/json/stations/byuuid/";//+ stationuuid
     private final String postClickStationUrl = "http://all.api.radio-browser.info/json/url/"; //+ stationuuid
     private final String postVoteStationUrl = "http://all.api.radio-browser.info/json/vote/"; //+ stationuuid
@@ -66,14 +67,19 @@ public class dataServiceImpl implements IDataService {
     private Mono<StationResponseDto> saveStationToDatabase(DataResponseDto response) {
         return Mono.fromCallable(() -> {
             Station station = mapper.map(response, Station.class);
-            Station savedStation = repository.save(station);
-            return mapper.map(savedStation, StationResponseDto.class);
+            if (isValidStation(station)) {
+                Station savedStation = repository.save(station);
+                return mapper.map(savedStation, StationResponseDto.class);
+            } else {
+                return null;
+            }
         });
     }
 
     private Mono<Long> saveListStationsToDatabase(List<DataResponseDto> response) {
         return Flux.fromIterable(response)
                 .flatMap(this::saveStationToDatabase)
+                .filter(station -> station != null)
                 .count();
     }
 
@@ -85,7 +91,11 @@ public class dataServiceImpl implements IDataService {
                 .bodyToMono(DataResponseDto.class)
                 .flatMap(response -> {
                     Station station = mapper.map(response, Station.class);
-                    return Mono.fromCallable(() -> repository.save(station));
+                    if (isValidStation(station)) {
+                        return Mono.fromCallable(() -> repository.save(station));
+                    } else {
+                        return Mono.empty();
+                    }
                 })
                 .map(savedStation -> {
                     String message = "Station retrieved and saved: " + savedStation.getStationuuid();
@@ -94,7 +104,23 @@ public class dataServiceImpl implements IDataService {
                 .onErrorResume(e -> {
                     String errorMessage = "Error occurred while fetching station: " + e.getMessage();
                     return Mono.just(new ModifyResponseDto(false, errorMessage, 0L));
-                });
+                })
+                .switchIfEmpty(Mono.just(new ModifyResponseDto(false, "Station not saved due to invalid field length", 0L)));
+    }
+
+    private boolean isValidStation(Station station) {
+        for (Field field : station.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                Object value = field.get(station);
+                if (value instanceof String && ((String) value).length() > 255) {
+                    return false;
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 
     @Override

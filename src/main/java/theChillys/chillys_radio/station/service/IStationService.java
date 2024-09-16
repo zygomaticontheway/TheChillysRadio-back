@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface IStationService {
     List<StationResponseDto> getAllStationsByTopClicks();
+    List<StationResponseDto> getAllStations();
 
     List<StationResponseDto> getAllStationsByTopVotes();
 
