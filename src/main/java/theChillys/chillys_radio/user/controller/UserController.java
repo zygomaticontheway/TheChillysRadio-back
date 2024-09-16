@@ -72,9 +72,9 @@ public class UserController {
     }
   
     @PreAuthorize("hasRole('ADMIN')")  // only for admin
-    @PutMapping("/set-admin/{email}")
-    public UserResponseDto setAdminRole(@PathVariable(name = "email") String email) {
-        return service.setAdminRole(email);
+    @PutMapping("/set-admin/{name}")
+    public UserResponseDto setAdminRole(@PathVariable(name = "name") String name) {
+        return service.setAdminRole(name);
     }
 
     @GetMapping("/users/{userId}/favorites")

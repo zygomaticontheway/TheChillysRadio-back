@@ -94,13 +94,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto setAdminRole(String email) {
+    public UserResponseDto setAdminRole(String name) {
 
-        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with email: " + name + " not found"));
 
-        if (!user.getRoles().contains("ADMIN")) {
+        if (!user.getRoles().contains(roleService.getRoleByTitle("ROLE_ADMIN"))) {
             Set<Role> roles = user.getRoles();
-            roles.add(roleService.getRoleByTitle("ADMIN"));
+            roles.add(roleService.getRoleByTitle("ROLE_ADMIN"));
             user.setRoles(roles);
             repository.save(user);
         } else {
@@ -193,7 +193,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public boolean toggleFavoriteStation(Long userId, String stationUuid) {
         User user = findUserById(userId);
-        Object station = stationRepository.findByStationuuid(stationUuid)
+        Station station = stationRepository.findByStationuuid(stationUuid)
                 .orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationUuid));
 
         if (user.getFavorites().contains(station)) {
