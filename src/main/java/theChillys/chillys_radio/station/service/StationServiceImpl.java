@@ -52,7 +52,7 @@ public class StationServiceImpl implements IStationService {
                 .collect(Collectors.toList());
     }
     @Override
-    public StationResponseDto getStationById(String stationuuid) {
+    public StationResponseDto getStationByStationuuid(String stationuuid) {
 
         logger.debug("Fetching station");
 

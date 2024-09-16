@@ -14,6 +14,7 @@ import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationRequestDto;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
+import theChillys.chillys_radio.station.repository.IStationRepository;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.entity.User;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IRoleService roleService;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
+    private final IStationRepository stationRepository;
 //  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
@@ -191,7 +193,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public boolean toggleFavoriteStation(Long userId, String stationUuid) {
         User user = findUserById(userId);
-        Object station = stationRepository.findByUuid(stationUuid)
+        Object station = stationRepository.findByStationuuid(stationUuid)
                 .orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationUuid));
 
         if (user.getFavorites().contains(station)) {
