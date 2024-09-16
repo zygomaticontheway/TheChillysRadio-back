@@ -1,21 +1,22 @@
 package theChillys.chillys_radio.user.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
+import theChillys.chillys_radio.station.dto.StationRequestDto;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
-import theChillys.chillys_radio.station.repository.IStationRepository;
-import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
+import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
 
 import java.util.Collections;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +34,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IRoleService roleService;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder;
-    private final IStationRepository stationRepository;
 //  private final UserDetailsServiceAutoConfiguration userDetailsServiceAutoConfiguration;
 
     public User findUserById(Long userId) {
@@ -60,37 +60,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 roles);
     }
 
-
-    @Override
-    public boolean setLike(Long userId, Long stationId) {
-
-        User user = findUserById(userId);
-        Station station = stationRepository.findById(stationId)
-                .orElseThrow(() ->
-                        new RuntimeException("Station not found with id: " + stationId));
-
-        if (user.getFavorites().contains(station)) {
-            return false;
-        }
-
-        user.getFavorites().add(station);
-        repository.save(user);
-
-        return true;
-    }
-
-
-    @Override
-    public boolean logOut(Long userId) {
-
-        return false;
-    }
-
     @Override
     public List<UserResponseDto> getUsers() {
         List<User> customers = repository.findAll();
 
-        return customers.stream().map(c->mapper.map(c, UserResponseDto.class)).toList();
+        return customers.stream().map(c -> mapper.map(c, UserResponseDto.class)).toList();
     }
 
     @Override
@@ -117,12 +91,57 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserResponseDto setAdminRole(String username) {
-        // TODO Реализуйте логику назначения роли администратора
+    @Transactional
+    public UserResponseDto setAdminRole(String email) {
 
-      return null;
+        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+
+        if (!user.getRoles().contains("ADMIN")) {
+            Set<Role> roles = user.getRoles();
+            roles.add(roleService.getRoleByTitle("ADMIN"));
+            user.setRoles(roles);
+            repository.save(user);
+        } else {
+            throw new RuntimeException("User is already admin");
+        }
+
+        return mapper.map(user, UserResponseDto.class);
     }
 
+    @Override
+    @Transactional
+    public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
+        User user = findUserById(userId);
+        user.setId(userId);
+
+        if (dto.getName() != null) {
+            user.setName(dto.getName());
+        }
+        if (dto.getEmail() != null) {
+            user.setEmail(dto.getEmail());
+        }
+        if (dto.getPassword() != null) {
+            user.setPassword(encoder.encode(dto.getPassword()));
+        }
+        user.setRoles(user.getRoles());
+        user.setFavorites(user.getFavorites());
+
+
+        User savedUser = repository.save(user);
+        return mapper.map(savedUser, UserResponseDto.class);
+
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDto changePassword(Long userId, String newPassword) {
+        User user = findUserById(userId);
+        String encodedPass = encoder.encode(newPassword);
+        user.setPassword(encodedPass);
+        User saved = repository.save(user);
+
+        return mapper.map(saved, UserResponseDto.class);
+    }
 
 
     @Override
@@ -139,7 +158,29 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
 
-    //как spring получает User по логину
+    public UserResponseDto getUserResponseDtoByName(String name) {
+        Optional<User> userOptional = repository.findUserByName(name);
+
+        if (userOptional.isPresent()) {
+
+            UserResponseDto dto = new UserResponseDto();
+            dto.setId(userOptional.get().getId());
+            dto.setName(userOptional.get().getName());
+            dto.setEmail(userOptional.get().getEmail());
+            List<StationResponseDto> favoriteStationDTOList = userOptional.get().getFavorites().stream()
+                    .map(station -> new StationResponseDto())
+                            .toList();
+            dto.setFavorites(favoriteStationDTOList);
+            dto.setRoles(userOptional.get().getRoles());
+
+            return dto;
+
+        } else {
+            throw new UserNotFoundException("User with name " + name + " not found");
+        }
+    }
+
+    //как spring получает User по логину - логин - это name!
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
@@ -164,9 +205,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             return true;
         }
     }
-
-
-
 }
 
 

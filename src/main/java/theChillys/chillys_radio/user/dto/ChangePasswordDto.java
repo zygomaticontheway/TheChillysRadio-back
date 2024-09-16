@@ -1,4 +1,5 @@
-package theChillys.chillys_radio.data.dto;
+package theChillys.chillys_radio.user.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ModifyResponseDto {
-
-    private boolean ok;
-    private String message;
-    private Long modifiedItems;
-
+public class ChangePasswordDto {
+    private String newPassword;
 }

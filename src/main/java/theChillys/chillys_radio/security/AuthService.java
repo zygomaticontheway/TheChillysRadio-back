@@ -3,6 +3,8 @@ package theChillys.chillys_radio.security;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.user.entity.User;
@@ -18,6 +20,7 @@ public class AuthService {
     private final IUserService userService;
     private final TokenService tokenService;
     private final BCryptPasswordEncoder passwordEncoder;
+
 
     private final Map<String, String> refreshTokenStorage = new HashMap<>(); //name, token
 
@@ -59,6 +62,14 @@ public class AuthService {
 //            throw new RuntimeException();
         }
 
+    }
+
+    public void logout(String token) {
+        Claims claims = tokenService.getRefreshClaims(token);
+        String username = claims.getSubject();
+
+        // Удаляем токен из хранения
+        refreshTokenStorage.remove(username);
     }
 
 }
