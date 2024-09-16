@@ -14,4 +14,5 @@ public interface IStationRepository extends JpaRepository<Station, Long> {
     List<Station> findAllByOrderByVotesDesc();
     Optional<Station> findByStationuuid(String stationuuid);
 
+    Optional<Object> findByUuid(String stationUuid);
 }
