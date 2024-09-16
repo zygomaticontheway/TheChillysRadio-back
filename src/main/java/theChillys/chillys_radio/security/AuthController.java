@@ -41,13 +41,13 @@ public class AuthController {
     }
 
 
-//    @GetMapping("/logout")
-//    public TokenResponseDto logout(@RequestHeader("Authorization") String authHeader) {
-//
-//        String token = authHeader.substring(7);
-//        authService.logout(token);
-//        return new TokenResponseDto(null, null);
-//    }
+   // @GetMapping("/logout")
+   // public TokenResponseDto logout(@RequestHeader("Authorization") String authHeader) {
+
+    //    String token = authHeader.substring(7);
+    //    authService.logout(token);
+    //    return new TokenResponseDto(null, null);
+   // }
 
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
@@ -60,6 +60,7 @@ public class AuthController {
 
         return ResponseEntity.noContent().build();
     }
+
 
     @PostMapping("/register")
     public UserResponseDto registrationUser(@RequestBody UserRequestDto user ) {
