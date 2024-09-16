@@ -147,7 +147,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
 
-        return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
+      return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
     }
 
     @Override
@@ -184,8 +184,26 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
-        return repository.findUserByName(name)
+      return repository.findUserByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+    }
+
+    @Override
+    public boolean toggleFavoriteStation(Long userId, String stationUuid) {
+        User user = findUserById(userId);
+        Object station = stationRepository.findByUuid(stationUuid)
+                .orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationUuid));
+
+        if (user.getFavorites().contains(station)) {
+
+            user.getFavorites().remove(station);
+            repository.save(user);
+            return false;
+        } else {
+            user.getFavorites().add((Station) station);
+            repository.save(user);
+            return true;
+        }
     }
 }
 
