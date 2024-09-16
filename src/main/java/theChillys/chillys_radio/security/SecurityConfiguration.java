@@ -42,6 +42,10 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll() //.hasAnyRole("USER", "ADMIN") //hasRole("ADMIN") = разрешить только пользователям с ролью ADMIN
                                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/all").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/all/{stationuuid}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/click/{stationuuid}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/vote/{stationuuid}").hasRole("ADMIN")
 
                                 .anyRequest().authenticated() //все остальные запросы доступны только авторизованным пользователям
                 ).addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
