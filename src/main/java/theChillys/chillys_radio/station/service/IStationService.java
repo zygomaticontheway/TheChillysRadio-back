@@ -26,5 +26,5 @@ public interface IStationService {
     StationUrlDto getStreamUrl (String stationuuid);
 
 
-    List<StationResponseDto> findStationsByGenreCountryLanguage(String genre, String country, String language);
+   // List<StationResponseDto> findStationsByGenreCountryLanguage(String genre, String country, String language);
 }
