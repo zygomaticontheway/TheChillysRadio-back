@@ -31,6 +31,15 @@ public class StationServiceImpl implements IStationService {
     private final IDataService dataService;
 
 
+    public List<StationResponseDto> getAllStations() {
+
+        logger.debug("Fetching all stations ");
+
+        List<Station> stations = repository.findAll();
+        return stations.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<StationResponseDto> getAllStationsByTopClicks() {
@@ -105,6 +114,7 @@ public class StationServiceImpl implements IStationService {
     public StationUrlDto getStreamUrl(String stationuuid) {
 
         String urlResolved = repository.findByStationuuid(stationuuid).get().getUrl_resolved();
+        click(stationuuid);
 
         return new StationUrlDto(urlResolved);
     }

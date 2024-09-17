@@ -23,7 +23,7 @@ public interface IUserService {
 
     UserResponseDto getUsersFavoriteStations(Long userId);
 
-    UserResponseDto setAdminRole(String email);
+    UserResponseDto setAdminRole(String name);
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 
