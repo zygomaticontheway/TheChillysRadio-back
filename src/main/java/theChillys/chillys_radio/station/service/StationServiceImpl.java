@@ -119,14 +119,14 @@ public class StationServiceImpl implements IStationService {
         return new StationUrlDto(urlResolved);
     }
 
-//    @Override
-//    public List<StationResponseDto> findStationsByGenreCountryLanguage(String genre, String country, String language) {
-//        List<Station> stations = repository.findStationByGenreOrCountryOrLanguage( genre,  country,  language);
-//
-//        return stations.stream()
-//                .map(station -> mapper.map(station,StationResponseDto.class))
-//                .toList();
-//    }
+    @Override
+    public List<StationResponseDto> findStationsByTagsCountryLanguage(String tags, String country, String language) {
+        List<Station> stations = repository.findStationsByTagsOrCountryOrLanguage(tags, country, language);
+
+        return stations.stream()
+                .map(station -> mapper.map(station,StationResponseDto.class))
+                .toList();
+    }
 }
 
 
