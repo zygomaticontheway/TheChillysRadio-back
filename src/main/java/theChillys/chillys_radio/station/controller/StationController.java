@@ -61,7 +61,7 @@ public class StationController {
                     @RequestParam(value = "country", required = false) String country,
                     @RequestParam(value = "language", required = false) String language){
 
-        return service.findStationsByGenreCountryLanguage(tags,country,language);
+        return service.findStationsByTagsCountryLanguage(tags,country,language);
     }
 
 }
