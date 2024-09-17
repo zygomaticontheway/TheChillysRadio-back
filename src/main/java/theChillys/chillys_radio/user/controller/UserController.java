@@ -79,7 +79,11 @@ public class UserController {
     @GetMapping("/users/my-profile")
     public UserResponseDto getUserProfile(Principal principal) {
         String name = principal.getName();
-        return service.getUserResponseDtoByName(name);
+
+        UserResponseDto userResponseDtoByName = service.getUserResponseDtoByName(name);
+        Long id1 = userResponseDtoByName.getId();
+        return getUsersFavoriteStations(id1);
+
     }
 
 }

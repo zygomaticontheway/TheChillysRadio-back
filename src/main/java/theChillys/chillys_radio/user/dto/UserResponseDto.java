@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
+import theChillys.chillys_radio.station.entity.Station;
 
 import java.util.List;
 import java.util.Set;
