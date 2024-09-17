@@ -50,8 +50,8 @@ public class UserController {
     }
   
      @PostMapping("/users/my-favorites")
-     public boolean toggleFavoriteStation(@RequestParam Long userId, @RequestParam String stationUuid) {
-         return service.toggleFavoriteStation(userId, stationUuid);
+     public boolean toggleFavoriteStation(@RequestParam Long id, @RequestParam String stationuuid) {
+         return service.toggleFavoriteStation(id, stationuuid);
      }
 
     @PutMapping("/users/{id}")
