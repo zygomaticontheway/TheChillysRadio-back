@@ -12,5 +12,6 @@ public interface IStationRepository extends JpaRepository<Station, Long> {
     List<Station> findAllByOrderByClickcountDesc();
     List<Station> findAllByOrderByVotesDesc();
     Optional<Station> findByStationuuid(String stationuuid);
-
+    List<Station> findStationByGenreOrCountryOrLanguage(String tags, String country, String language);
+    //findStationsByGenreCountryLanguage
 }
