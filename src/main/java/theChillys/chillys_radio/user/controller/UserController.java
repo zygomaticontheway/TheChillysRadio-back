@@ -43,7 +43,6 @@ public class UserController {
     public UserResponseDto createUser(@RequestBody UserRequestDto dto) {
         return service.createUser(dto);
     }
-
   
     @GetMapping("/users/{id}")
      public Optional<UserResponseDto> getUserById(@PathVariable(name="id") Long userId) {
@@ -51,8 +50,8 @@ public class UserController {
     }
   
      @PostMapping("/users/my-favorites")
-     public boolean toggleFavoriteStation(@RequestParam Long id, @RequestParam String stationuuid) {
-         return service.toggleFavoriteStation(id, stationuuid);
+     public boolean toggleFavoriteStation(@RequestParam Long userId, @RequestParam String stationUuid) {
+         return service.toggleFavoriteStation(userId, stationUuid);
      }
 
     @PutMapping("/users/{id}")
@@ -82,7 +81,6 @@ public class UserController {
         String name = principal.getName();
         return service.getUserResponseDtoByName(name);
     }
-
 
 }
 
