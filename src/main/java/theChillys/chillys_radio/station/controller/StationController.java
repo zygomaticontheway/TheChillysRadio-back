@@ -26,12 +26,6 @@ public class StationController {
     @Autowired
     private final IStationService service;
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<StationResponseDto>> getAllStations() {
-        return ResponseEntity.ok(service.getAllStations());
-    }
-
-
     @GetMapping("/stations/top-clicks")
     public ResponseEntity<List<StationResponseDto>> getTopClickStations() {
         return ResponseEntity.ok(service.getAllStationsByTopClicks());
