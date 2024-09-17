@@ -120,8 +120,8 @@ public class StationServiceImpl implements IStationService {
     }
 
     @Override
-    public List<StationResponseDto> findStationsByGenreCountryLanguage(String genre, String country, String language) {
-        List<Station> stations = repository.findStationByGenreOrCountryOrLanguage( genre,  country,  language);
+    public List<StationResponseDto> findStationsByTagsCountryLanguage(String tags, String country, String language) {
+        List<Station> stations = repository.findStationByTagsOrCountryOrLanguage(tags, country, language);
 
         return stations.stream()
                 .map(station -> mapper.map(station,StationResponseDto.class))

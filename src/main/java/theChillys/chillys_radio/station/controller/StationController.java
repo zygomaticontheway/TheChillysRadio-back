@@ -62,12 +62,11 @@ public class StationController {
     }
 
     @GetMapping("/stations")
-    public List<UserResponseDto> findStationsByGenreCountryLanguage (@RequestParam(value = "genre", required = false) String genre,
-    @RequestParam(value = "country", required = false) String country,
-    @RequestParam(value = "language", required = false) String language){
-        List<StationResponseDto> stations = service.findStationsByGenreCountryLanguage( genre,country,language);
-        return findStationsByGenreCountryLanguage(genre, country, language);
+    public List<StationResponseDto> findStationsByTagsCountryLanguage (@RequestParam(value = "tags", required = false) String tags,
+                    @RequestParam(value = "country", required = false) String country,
+                    @RequestParam(value = "language", required = false) String language){
 
+        return service.findStationsByTagsCountryLanguage(tags,country,language);
     }
 
 }
