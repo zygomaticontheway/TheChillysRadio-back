@@ -92,13 +92,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto setAdminRole(String email) {
+    public UserResponseDto setAdminRole(String name) {
 
-        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with email: " + name + " not found"));
 
-        if (!user.getRoles().contains("ADMIN")) {
+        if (!user.getRoles().contains(roleService.getRoleByTitle("ROLE_ADMIN"))) {
             Set<Role> roles = user.getRoles();
-            roles.add(roleService.getRoleByTitle("ADMIN"));
+            roles.add(roleService.getRoleByTitle("ROLE_ADMIN"));
             user.setRoles(roles);
             repository.save(user);
         } else {

@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface IStationService {
     List<StationResponseDto> getAllStationsByTopClicks();
+    List<StationResponseDto> getAllStations();
 
     List<StationResponseDto> getAllStationsByTopVotes();
 
@@ -25,4 +26,5 @@ public interface IStationService {
     StationUrlDto getStreamUrl (String stationuuid);
 
 
+    List<StationResponseDto> findStationsByGenreCountryLanguage(String genre, String country, String language);
 }

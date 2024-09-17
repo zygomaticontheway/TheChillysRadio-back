@@ -54,13 +54,11 @@ public class Station {
     @Column(name = "language")
     private String language;
 
-
     @Column(name = "languagecodes")
     private String languagecodes;
 
     @Column(name = "votes")
     private Long votes;
-
 
     @Column(name = "lastchangetime")
     private String lastchangetime;
