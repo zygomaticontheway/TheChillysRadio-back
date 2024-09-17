@@ -43,14 +43,6 @@ public class UserController {
     public UserResponseDto createUser(@RequestBody UserRequestDto dto) {
         return service.createUser(dto);
     }
-<<<<<<< dataController_saveOrUpdateStation
-=======
-
-   // @GetMapping("/users")
-   // public List<UserResponseDto> getUsers() {
-        //return service.getUsers();
-    //}
->>>>>>> dev
   
     @GetMapping("/users/{id}")
      public Optional<UserResponseDto> getUserById(@PathVariable(name="id") Long userId) {
@@ -89,7 +81,6 @@ public class UserController {
         String name = principal.getName();
         return service.getUserResponseDtoByName(name);
     }
-
 
 }
 
