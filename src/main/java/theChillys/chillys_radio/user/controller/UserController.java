@@ -35,10 +35,10 @@ public class UserController {
         return service.createUser(dto);
     }
 
-    @GetMapping("/users")
-    public List<UserResponseDto> getUsers() {
-        return service.getUsers();
-    }
+   // @GetMapping("/users")
+   // public List<UserResponseDto> getUsers() {
+        //return service.getUsers();
+    //}
   
     @GetMapping("/users/{id}")
      public Optional<UserResponseDto> getUserById(@PathVariable(name="id") Long userId) {
