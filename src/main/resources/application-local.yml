@@ -1,11 +1,13 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chillys_radio
+    username: postgres
+    password: qwerty007
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
-  servlet:
-    multipart:
-      max-file-size: 10GB
+        auto_quote_keyword: true
