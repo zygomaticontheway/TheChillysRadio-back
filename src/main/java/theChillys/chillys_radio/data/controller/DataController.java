@@ -19,13 +19,13 @@ public class DataController {
     @Autowired
     private final IDataService service;
 
-    @GetMapping("/all")
+    @GetMapping("/ivan-stations")
     public Mono<ModifyResponseDto> getAllStations(){
 
         return service.getAllStations();
     }
 
-    @GetMapping("/all/{stationuuid}")
+    @GetMapping("/ivan-stations/{stationuuid}")
     public Mono<ModifyResponseDto> getStationByStationuuid(@PathVariable (name = "stationuuid") String stationuuid){
 
         return service.getStationByStationuuid(stationuuid);
