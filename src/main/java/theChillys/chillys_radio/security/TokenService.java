@@ -22,7 +22,7 @@ import java.util.*;
 // генератор https://www.devglan.com/online-tools/hmac-sha256-online
 //oxCIJkAR/pepyVVpChYM3UhUfsjY8jfkSyqp7Do9xFc=
 
-//refresh SHA256 Base64.application.properties
+//refresh SHA256 Base64.application_properties.md
 
 
 @Service
@@ -33,8 +33,8 @@ public class TokenService {
     private SecretKey refreshKey;
     private final IRoleRepository roleRepository;
 
-    // @Value - аннотация для получения значений из application.properties, это чувствительные данные, которые хранятся только внутри системы
-    public TokenService(@Value("${key.access}") String accessPhrase, // ${key.access} придуманные имена из головы, такие же должны быть в application.properties
+    // @Value - аннотация для получения значений из application_properties.md, это чувствительные данные, которые хранятся только внутри системы
+    public TokenService(@Value("${key.access}") String accessPhrase, // ${key.access} придуманные имена из головы, такие же должны быть в application_properties.md
                         @Value("${key.refresh}") String refreshPhrase,
                         @Autowired IRoleRepository roleRepository) {
         this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessPhrase));
