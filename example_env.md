@@ -1,5 +1,5 @@
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=chillys_radio
+DB_NAME=chillys_test
 DB_USERNAME=postgres
 DB_PASSWORD=qwerty007
