@@ -12,3 +12,7 @@ spring:
         auto_quote_keyword: true
   key_access: oxCIJkAR/pepyVVpChYM3UhUfsjY8jfkSyqp7Do9xFc=
   key_refresh: T8QmKiJpXwG0OCXyqJRQ0i9IN5/7G37HPmQqKyOoEd4=
+
+server:
+  servlet:
+    context-path: /api
