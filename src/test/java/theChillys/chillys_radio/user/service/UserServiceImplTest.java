@@ -47,7 +47,7 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        // Инициализируем данные для тестов
+
         user = new User();
         user.setId(1L);
         user.setName("Test User");
@@ -69,7 +69,7 @@ class UserServiceImplTest {
 
     @Test
     void testGetUsersFavoriteStations() {
-        // Подготовка mock-объектов
+
         StationResponseDto stationResponseDto = new StationResponseDto();
         stationResponseDto.setStationuuid("stationUuid");
         stationResponseDto.setName("Test Station");
@@ -77,27 +77,24 @@ class UserServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(mapper.map(station, StationResponseDto.class)).thenReturn(stationResponseDto);
 
-        // Вызов тестируемого метода
         UserResponseDto responseDto = userServiceImpl.getUsersFavoriteStations(1L);
 
-        // Проверка результатов
         try {
-            assertNotNull(responseDto, "UserResponseDto не должен быть null");
-            assertEquals(1L, responseDto.getId(), "ID пользователя должен быть 1L");
-            assertEquals("Test User", responseDto.getName(), "Имя пользователя должно быть 'Test User'");
-            assertEquals("test@example.com", responseDto.getEmail(), "Email пользователя должен быть 'test@example.com'");
-            assertEquals(1, responseDto.getFavorites().size(), "Пользователь должен иметь 1 избранную станцию");
-            assertEquals("stationUuid", responseDto.getFavorites().get(0).getStationuuid(), "UUID станции должен быть 'stationUuid'");
-            assertEquals(1, responseDto.getRoles().size(), "Пользователь должен иметь 1 роль");
-            assertTrue(responseDto.getRoles().stream().anyMatch(r -> r.getTitle().equals("ROLE_USER")), "Пользователь должен иметь роль 'ROLE_USER'");
+            assertNotNull(responseDto, "UserResponseDto must not be null");
+            assertEquals(1L, responseDto.getId(), "User ID must be 1L");
+            assertEquals("Test User", responseDto.getName(), "Username must be 'Test User'");
+            assertEquals("test@example.com", responseDto.getEmail(), "User email must be 'test@example.com'");
+            assertEquals(1, responseDto.getFavorites().size(), "User must have 1 favorite station");
+            assertEquals("stationUuid", responseDto.getFavorites().get(0).getStationuuid(), "Station UUID must be 'stationUuid'");
+            assertEquals(1, responseDto.getRoles().size(), "User must have 1 role");
+            assertTrue(responseDto.getRoles().stream().anyMatch(r -> r.getTitle().equals("ROLE_USER")), "User must have role 'ROLE_USER'");
 
-            // Убедиться, что mock объекты были вызваны
             verify(userRepository).findById(1L);
             verify(mapper).map(station, StationResponseDto.class);
 
-            System.out.println("Тест testGetUsersFavoriteStations успешно пройден!");
+            System.out.println("Test testGetUsersFavoriteStations passed successfully!");
         } catch (AssertionError e) {
-            System.out.println("Тест testGetUsersFavoriteStations не пройден: " + e.getMessage());
+            System.out.println("Test testGetUsersFavoriteStations failed: " + e.getMessage());
             throw e;
         }
     }
