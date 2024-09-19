@@ -3,6 +3,7 @@ package theChillys.chillys_radio.station.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,16 @@ public class StationController {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
+
+  //  @GetMapping("/stations")
+  //  public List<UserResponseDto> findStationsByGenreCountryLanguage (@RequestParam(value = "genre", required = false) String genre,
+  //  @RequestParam(value = "country", required = false) String country,
+ //   @RequestParam(value = "language", required = false) String language){
+ //       List<StationResponseDto> stations = service.findStationsByGenreCountryLanguage( genre,country,language);
+ //       return findStationsByGenreCountryLanguage(genre, country, language);
+
+  //  }
+
     @GetMapping("/stations")
     public List<StationResponseDto> findStationsByTagsCountryLanguage (@RequestParam(value = "tags", required = false) String tags,
                     @RequestParam(value = "country", required = false) String country,
@@ -61,6 +72,14 @@ public class StationController {
 
         return service.findStationsByTagsCountryLanguage(tags,country,language);
     }
+    @GetMapping("/stations/paginated")   //example: GET /api/stations/paginated?page=1&size=30
+    public ResponseEntity<Page<StationResponseDto>> getAllStations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size) {
+        Page<StationResponseDto> stations = service.getAllStations(page, size);
+        return ResponseEntity.ok(stations);
+    }
+
 
 }
 
