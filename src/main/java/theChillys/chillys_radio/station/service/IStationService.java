@@ -20,10 +20,12 @@ public interface IStationService {
     StationResponseDto getStationByStationuuid(String stationuuid);
 
     Mono<ModifyResponseDto> vote(String stationuuid);
+
     Mono<ModifyResponseDto> click(String stationuuid);
 
-    StationUrlDto getStreamUrl (String stationuuid);
+    StationUrlDto getStreamUrl(String stationuuid);
 
 
-    List<StationResponseDto> findStationsByGenreCountryLanguage(String name,String genre, String country, String language);
+    List<StationResponseDto> findStationsByGenreCountryLanguage(String name, String genre, String country, String language);
+
 }

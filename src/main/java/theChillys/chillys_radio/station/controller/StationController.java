@@ -56,11 +56,8 @@ public class StationController {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
-
-
-
     @GetMapping("/stations")
-    public List<StationResponseDto> findStationsByGenreCountryLanguage(@RequestParam(value = "name",required = false)String name,
+    public List<StationResponseDto> findStationsByGenreCountryLanguage   (@RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "tags", required = false) String tags,
     @RequestParam(value = "country", required = false) String country,
     @RequestParam(value = "language", required = false) String language){
