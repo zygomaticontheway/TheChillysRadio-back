@@ -3,6 +3,7 @@ package theChillys.chillys_radio.station.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +71,13 @@ public class StationController {
                     @RequestParam(value = "language", required = false) String language){
 
         return service.findStationsByTagsCountryLanguage(tags,country,language);
+    }
+    @GetMapping("/stations/paginated")   //example: GET /api/stations/paginated?page=1&size=30
+    public ResponseEntity<Page<StationResponseDto>> getAllStations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size) {
+        Page<StationResponseDto> stations = service.getAllStations(page, size);
+        return ResponseEntity.ok(stations);
     }
 
 
