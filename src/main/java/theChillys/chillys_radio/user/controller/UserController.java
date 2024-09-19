@@ -17,7 +17,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 public class UserController {
 
 
