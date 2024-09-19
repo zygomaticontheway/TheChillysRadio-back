@@ -5,8 +5,6 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
 import theChillys.chillys_radio.data.service.IDataService;
@@ -15,8 +13,6 @@ import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
-import theChillys.chillys_radio.user.dto.UserResponseDto;
-import theChillys.chillys_radio.user.entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,14 +105,15 @@ public class StationServiceImpl implements IStationService {
         return new StationUrlDto(urlResolved);
     }
 
-    @Override
-    public List<StationResponseDto> findStationsByGenreCountryLanguage(String name,String tags, String country, String language) {
-        List<Station> stations = repository.findStationByGenreOrCountryOrLanguage( name,tags,  country,  language);
 
-        return stations.stream()
-                .map(station -> mapper.map(station,StationResponseDto.class))
-                .toList();
-    }
+        @Override
+        public List<StationResponseDto> findStationByNameTagsCountryLanguage(String name, String tags, String country, String language) {
+            List<Station> stations = repository.findStationByNameOrTagsOrCountryOrLanguage(name, tags, country, language);
+
+            return stations.stream()
+                    .map(station -> mapper.map(station, StationResponseDto.class))
+                    .toList();
+        }
 }
 
 

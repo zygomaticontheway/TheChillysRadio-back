@@ -56,14 +56,25 @@ public class StationController {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
-    @GetMapping("/stations")
-    public List<StationResponseDto> findStationsByGenreCountryLanguage   (@RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "tags", required = false) String tags,
-    @RequestParam(value = "country", required = false) String country,
-    @RequestParam(value = "language", required = false) String language){
-        List<StationResponseDto> stations = service.findStationsByGenreCountryLanguage(name,tags,country,language);
-        return service.findStationsByGenreCountryLanguage( name,tags,country,language);
+  //  @GetMapping("/stations")
+    //public List<StationResponseDto> findStationsByNamesOrTagsOrCountryOrLanguage(
+      //       //@RequestParam(value = "name", required = false) String name,
+        //     @RequestParam(value = "tags", required = false) String tags,
+          //   @RequestParam(value = "country", required = false) String country,
+            // @RequestParam(value = "language", required = false) String language){
+        //service.findStationByTagsCountryLanguage(tags,country,language);
+        //return service.findStationByTagsCountryLanguage( tags,country,language);
+  @GetMapping("/stations")
+  public List<StationResponseDto> findStationsByNameTagsCountryLanguage(
+          @RequestParam(value = "name", required = false) String name,
+          @RequestParam(value = "tags", required = false) String tags,
+          @RequestParam(value = "country", required = false) String country,
+          @RequestParam(value = "language", required = false) String language) {
+
+      return service.findStationByNameTagsCountryLanguage(name, tags, country, language);
+  }
+
+
     }
 
-}
 
