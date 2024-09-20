@@ -40,32 +40,32 @@ public class StationController {
     public ResponseEntity<StationResponseDto> getStationById(@PathVariable("id") String stationuuid) {
         return ResponseEntity.ok(service.getStationByStationuuid(stationuuid));
     }
+
     @ExceptionHandler(StationNotFoundException.class)
     public ResponseEntity<String> handleStationNotFound(StationNotFoundException ex) {
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/stations/{id}/stream")
-    public StationUrlDto getStreamUrl (@PathVariable String stationuuid){
+    public StationUrlDto getStreamUrl(@PathVariable String stationuuid) {
         return service.getStreamUrl(stationuuid);
     }
 
     @PostMapping("/stations/{id}/vote")
-    public Mono<ModifyResponseDto> vote(@PathVariable (name = "id") String stationuuid) {
+    public Mono<ModifyResponseDto> vote(@PathVariable(name = "id") String stationuuid) {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
-  @GetMapping("/stations")
-  public List<StationResponseDto> findStationsByNameTagsCountryLanguage(
-          @RequestParam(value = "name", required = false) String name,
-          @RequestParam(value = "tags", required = false) String tags,
-          @RequestParam(value = "country", required = false) String country,
-          @RequestParam(value = "language", required = false) String language) {
+    @GetMapping("/stations")
+    public List<StationResponseDto> findStationsByNameTagsCountryLanguage(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "tags", required = false) String tags,
+            @RequestParam(value = "country", required = false) String country,
+            @RequestParam(value = "language", required = false) String language) {
 
-      return service.findStationByNameTagsCountryLanguage(name, tags, country, language);
-  }
-
+        return service.findStationByNameTagsCountryLanguage(name, tags, country, language);
     }
+
     @GetMapping("/stations/paginated")   //example: GET /api/stations/paginated?page=1&size=30
     public ResponseEntity<Page<StationResponseDto>> getAllStations(
             @RequestParam(defaultValue = "0") int page,
@@ -73,6 +73,4 @@ public class StationController {
         Page<StationResponseDto> stations = service.getAllStations(page, size);
         return ResponseEntity.ok(stations);
     }
-
-
-
+}
