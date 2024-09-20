@@ -31,10 +31,10 @@ class AuthServiceTest {
         authService = new AuthService(userService, tokenService, passwordEncoder);
     }
 
+
     @Test
     void login_SuccessfulLogin() throws AuthException {
         try {
-            // Arrange
             UserLoginDto inboundUser = new UserLoginDto("testUser", "password123");
             User foundUser = new User();
             foundUser.setName("testUser");
@@ -45,10 +45,8 @@ class AuthServiceTest {
             when(tokenService.generateAccessToken(foundUser)).thenReturn("accessToken");
             when(tokenService.generateRefreshToken(foundUser)).thenReturn("refreshToken");
 
-            // Act
             TokenResponseDto response = authService.login(inboundUser);
 
-            // Assert
             assertNotNull(response);
             assertEquals("accessToken", response.getAccessToken());
             assertEquals("refreshToken", response.getRefreshToken());
@@ -67,7 +65,6 @@ class AuthServiceTest {
     @Test
     void login_IncorrectPassword() {
         try {
-            // Arrange
             UserLoginDto inboundUser = new UserLoginDto("testUser", "wrongPassword");
             User foundUser = new User();
             foundUser.setName("testUser");
@@ -76,7 +73,6 @@ class AuthServiceTest {
             when(userService.loadUserByUsername("testUser")).thenReturn(foundUser);
             when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
-            // Act & Assert
             AuthException exception = assertThrows(AuthException.class, () -> authService.login(inboundUser));
             assertEquals("Incorrect password", exception.getMessage());
             verify(userService).loadUserByUsername("testUser");

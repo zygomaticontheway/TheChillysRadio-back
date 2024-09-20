@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import theChillys.chillys_radio.user.dto.UserRequestDto;
+import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.UserServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,18 +31,15 @@ class AuthControllerTest {
     @Test
     void login_SuccessfulLogin() throws AuthException {
         try {
-            // Arrange
+
             UserLoginDto loginDto = new UserLoginDto("testUser", "password123");
             TokenResponseDto expectedResponse = new TokenResponseDto("accessToken", "refreshToken");
 
-            // Мокаем успешный логин
             when(authService.login(loginDto)).thenReturn(expectedResponse);
 
-            // Act
             TokenResponseDto responseBody = authController.login(loginDto); // Получаем TokenResponseDto
             ResponseEntity<TokenResponseDto> response = ResponseEntity.ok(responseBody); // Оборачиваем в ResponseEntity
 
-            // Assert
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
             assertEquals(expectedResponse, response.getBody());
@@ -56,18 +55,15 @@ class AuthControllerTest {
     @Test
     void login_FailedLogin() throws AuthException {
         try {
-            // Arrange
+
             UserLoginDto loginDto = new UserLoginDto("testUser", "wrongPassword");
 
-            // Мокаем неуспешный логин с выбрасыванием исключения
             when(authService.login(loginDto)).thenThrow(new AuthException("Incorrect password"));
 
-            // Act
             TokenResponseDto responseBody = authController.login(loginDto); // Получаем TokenResponseDto
             ResponseEntity<TokenResponseDto> response = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new TokenResponseDto(null, null)); // Оборачиваем в ResponseEntity
 
-            // Assert
             assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
             assertNotNull(response.getBody());
             assertEquals(null, response.getBody().getAccessToken());
@@ -85,6 +81,7 @@ class AuthControllerTest {
     @Test
     void logout() {
         try {
+
             HttpServletResponse response = mock(HttpServletResponse.class);
 
             ResponseEntity<Void> actualResponse = authController.logout(response);
@@ -112,8 +109,34 @@ class AuthControllerTest {
         }
     }
 
-    @Test
-    void registrationUser() {
-        // Логика теста для registrationUser
-    }
+//    @Test
+//    void registrationUser() {
+//        try {
+//
+//            UserRequestDto userRequestDto = new UserRequestDto();
+//            userRequestDto.setUsername("newUser");
+//            userRequestDto.setPassword("password123");
+//
+//            UserResponseDto expectedResponse = new UserResponseDto();
+//            expectedResponse.setUsername("newUser");
+//            expectedResponse.setId(1L);
+//
+//            when(userService.createUser(userRequestDto)).thenReturn(expectedResponse);
+//
+//            UserResponseDto actualResponse = authController.registrationUser(userRequestDto);
+//
+//
+//            assertNotNull(actualResponse);
+//            assertEquals(expectedResponse.getUsername(), actualResponse.getUsername());
+//            assertEquals(expectedResponse.getId(), actualResponse.getId());
+//
+//            verify(userService).createUser(userRequestDto);
+//
+//            System.out.println("Test registrationUser passed successfully!");
+//        } catch (AssertionError | Exception e) {
+//            System.out.println("Test registrationUser failed: " + e.getMessage());
+//            throw e;
+//        }
+//    }
+
 }
