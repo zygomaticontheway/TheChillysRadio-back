@@ -1,6 +1,5 @@
 package theChillys.chillys_radio.station.service;
 
-
 import org.springframework.data.domain.Page;
 import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
@@ -12,7 +11,6 @@ import java.util.List;
 public interface IStationService {
     List<StationResponseDto> getAllStationsByTopClicks();
 
-//    List<StationResponseDto> getAllStations();
     Page<StationResponseDto> getAllStations(int page, int size);
 
     List<StationResponseDto> getAllStationsByTopVotes();
@@ -23,7 +21,8 @@ public interface IStationService {
 
     Mono<ModifyResponseDto> click(String stationuuid);
 
-    StationUrlDto getStreamUrl (String stationuuid);
+    StationUrlDto getStreamUrl(String stationuuid);
 
-    List<StationResponseDto> findStationsByTagsCountryLanguage(String genre, String country, String language);
+    List<StationResponseDto> findStationByNameTagsCountryLanguage(String name, String tags, String country, String language);
+
 }
