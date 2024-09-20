@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
-import theChillys.chillys_radio.station.dto.StationRequestDto;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -94,13 +92,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto setAdminRole(String email) {
+    public UserResponseDto setAdminRole(String name) {
 
-        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with email: " + name + " not found"));
 
-        if (!user.getRoles().contains("ADMIN")) {
+        if (!user.getRoles().contains(roleService.getRoleByTitle("ROLE_ADMIN"))) {
             Set<Role> roles = user.getRoles();
-            roles.add(roleService.getRoleByTitle("ADMIN"));
+            roles.add(roleService.getRoleByTitle("ROLE_ADMIN"));
             user.setRoles(roles);
             repository.save(user);
         } else {
@@ -149,7 +147,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
 
-      return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
+        return Optional.ofNullable(mapper.map(findUserById(id), UserResponseDto.class));
     }
 
     @Override
@@ -171,7 +169,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             dto.setEmail(userOptional.get().getEmail());
             List<StationResponseDto> favoriteStationDTOList = userOptional.get().getFavorites().stream()
                     .map(station -> new StationResponseDto())
-                            .toList();
+                    .toList();
             dto.setFavorites(favoriteStationDTOList);
             dto.setRoles(userOptional.get().getRoles());
 
@@ -186,27 +184,31 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
-      return repository.findUserByName(name)
+        return repository.findUserByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
     }
 
     @Override
-    public boolean toggleFavoriteStation(Long userId, String stationUuid) {
-        User user = findUserById(userId);
-        Object station = stationRepository.findByStationuuid(stationUuid)
-                .orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationUuid));
+    public boolean toggleFavoriteStation(Long id, String stationuuid) {
+        User user = findUserById(id);
+        if (stationRepository.findByStationuuid(stationuuid).isPresent()) {
+            Station station = stationRepository.findByStationuuid(stationuuid).get();
 
-        if (user.getFavorites().contains(station)) {
+            //.orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationuuid));
 
-            user.getFavorites().remove(station);
-            repository.save(user);
-            return false;
-        } else {
-            user.getFavorites().add((Station) station);
-            repository.save(user);
-            return true;
-        }
+            if (user.getFavorites().contains(station)) {
+
+                user.getFavorites().remove(station);
+                repository.save(user);
+                return false;
+            } else {
+                user.getFavorites().add(station);
+                repository.save(user);
+                return true;
+            }
+        } return false;
     }
 }
+
 
 

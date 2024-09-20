@@ -54,13 +54,11 @@ public class Station {
     @Column(name = "language")
     private String language;
 
-
     @Column(name = "languagecodes")
     private String languagecodes;
 
     @Column(name = "votes")
     private Long votes;
-
 
     @Column(name = "lastchangetime")
     private String lastchangetime;
@@ -84,6 +82,18 @@ public class Station {
 
         return stationuuid.equals(station.stationuuid);
     }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Station station = (Station) o;
+//        return Objects.equals(stationUuid, station.stationUuid);
+//    }
+
+
+
+
+
 
     @Override
     public int hashCode() {

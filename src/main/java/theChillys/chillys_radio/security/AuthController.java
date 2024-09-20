@@ -41,21 +41,14 @@ public class AuthController {
     }
 
 
-   // @GetMapping("/logout")
-   // public TokenResponseDto logout(@RequestHeader("Authorization") String authHeader) {
-
-    //    String token = authHeader.substring(7);
-    //    authService.logout(token);
-    //    return new TokenResponseDto(null, null);
-   // }
 
     @GetMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        // Очищаем куки
+
         Cookie cookie = new Cookie("Authorization", null);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(0); // Устанавливаем время жизни куки в 0 для удаления
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
 
         return ResponseEntity.noContent().build();

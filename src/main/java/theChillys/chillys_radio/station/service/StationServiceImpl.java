@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
@@ -27,6 +30,15 @@ public class StationServiceImpl implements IStationService {
     private final IDataService dataService;
 
 
+//    public List<StationResponseDto> getAllStations() {
+//
+//        logger.debug("Fetching all stations ");
+//
+//        List<Station> stations = repository.findAll();
+//        return stations.stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public List<StationResponseDto> getAllStationsByTopClicks() {
@@ -40,6 +52,18 @@ public class StationServiceImpl implements IStationService {
     }
 
     @Override
+    public Page<StationResponseDto> getAllStations(int page, int size) {
+        logger.debug("Fetching stations with page {} and size {}", page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Station> stationsPage = repository.findAll(pageable);
+        return stationsPage.map(this::convertToDto);
+    }
+
+    private StationResponseDto convertToDto(Station station) {
+        return mapper.map(station, StationResponseDto.class);
+    }
+
+    @Override
     public List<StationResponseDto> getAllStationsByTopVotes() {
 
         logger.debug("Fetching stations by top votes");
@@ -49,6 +73,7 @@ public class StationServiceImpl implements IStationService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
     @Override
     public StationResponseDto getStationByStationuuid(String stationuuid) {
 
@@ -57,10 +82,6 @@ public class StationServiceImpl implements IStationService {
         Station station = repository.findByStationuuid(stationuuid)
                 .orElseThrow(() -> new StationNotFoundException("Station not found with uuid: " + stationuuid));
         return convertToDto(station);
-    }
-
-    private StationResponseDto convertToDto(Station station) {
-        return mapper.map(station, StationResponseDto.class);
     }
 
 
@@ -101,10 +122,10 @@ public class StationServiceImpl implements IStationService {
     public StationUrlDto getStreamUrl(String stationuuid) {
 
         String urlResolved = repository.findByStationuuid(stationuuid).get().getUrl_resolved();
+        click(stationuuid);
 
         return new StationUrlDto(urlResolved);
     }
-
 
         @Override
         public List<StationResponseDto> findStationByNameTagsCountryLanguage(String name, String tags, String country, String language) {

@@ -3,6 +3,7 @@ package theChillys.chillys_radio.station.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 public class StationController {
 
     @Autowired
     private final IStationService service;
-
 
     @GetMapping("/stations/top-clicks")
     public ResponseEntity<List<StationResponseDto>> getTopClickStations() {
@@ -56,14 +55,6 @@ public class StationController {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
-  //  @GetMapping("/stations")
-    //public List<StationResponseDto> findStationsByNamesOrTagsOrCountryOrLanguage(
-      //       //@RequestParam(value = "name", required = false) String name,
-        //     @RequestParam(value = "tags", required = false) String tags,
-          //   @RequestParam(value = "country", required = false) String country,
-            // @RequestParam(value = "language", required = false) String language){
-        //service.findStationByTagsCountryLanguage(tags,country,language);
-        //return service.findStationByTagsCountryLanguage( tags,country,language);
   @GetMapping("/stations")
   public List<StationResponseDto> findStationsByNameTagsCountryLanguage(
           @RequestParam(value = "name", required = false) String name,
@@ -74,7 +65,14 @@ public class StationController {
       return service.findStationByNameTagsCountryLanguage(name, tags, country, language);
   }
 
-
     }
+    @GetMapping("/stations/paginated")   //example: GET /api/stations/paginated?page=1&size=30
+    public ResponseEntity<Page<StationResponseDto>> getAllStations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size) {
+        Page<StationResponseDto> stations = service.getAllStations(page, size);
+        return ResponseEntity.ok(stations);
+    }
+
 
 
