@@ -14,7 +14,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -23,6 +22,7 @@ public class UserController {
     @Autowired
     @Qualifier("userServiceImpl")
     private final IUserService service;
+
 
     @GetMapping("/users")
     public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
