@@ -67,8 +67,19 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return customers.stream().map(c -> mapper.map(c, UserResponseDto.class)).toList();
     }
 
+
     @Override
     public UserResponseDto createUser(UserRequestDto dto) {
+
+        if (dto.getName() == null || dto.getName().isEmpty()) {
+            throw new IllegalArgumentException("User name is required");
+        }
+        if (dto.getEmail() == null || dto.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (dto.getPassword() == null || dto.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
 
         repository.findUserByName(dto.getName()).ifPresent(u -> {
             throw new RuntimeException("User " + dto.getName() + " already exists");
@@ -89,6 +100,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
         return mapper.map(savedUser, UserResponseDto.class);
     }
+
+
 
     @Override
     @Transactional

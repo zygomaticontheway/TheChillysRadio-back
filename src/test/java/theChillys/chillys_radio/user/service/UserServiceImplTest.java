@@ -7,9 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.entity.Station;
+import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IUserRepository;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +40,9 @@ class UserServiceImplTest {
 
     @Mock
     private IStationRepository stationRepository;
+
+    @Mock
+    private BCryptPasswordEncoder encoder;
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -66,6 +72,104 @@ class UserServiceImplTest {
 
         user.setRoles(Set.of(role));
     }
+
+
+    @Test
+    void createUser_SuccessfulCreation() {
+        try {
+            UserRequestDto userRequestDto = new UserRequestDto();
+            userRequestDto.setName("New User");
+            userRequestDto.setEmail("newuser@example.com");
+            userRequestDto.setPassword("password123");
+
+            User newUser = new User();
+            newUser.setName("New User");
+            newUser.setEmail("newuser@example.com");
+            newUser.setPassword("encodedPassword");
+            newUser.setRoles(Set.of(role));
+            newUser.setFavorites(new HashSet<>());
+
+            when(userRepository.findUserByName("New User")).thenReturn(Optional.empty());
+            when(roleService.getRoleByTitle("ROLE_USER")).thenReturn(role);
+            when(encoder.encode("password123")).thenReturn("encodedPassword");
+            when(userRepository.save(any(User.class))).thenReturn(newUser);
+            when(mapper.map(newUser, UserResponseDto.class)).thenReturn(new UserResponseDto());
+
+            UserResponseDto response = userServiceImpl.createUser(userRequestDto);
+
+            assertNotNull(response, "Response should not be null");
+            verify(userRepository).findUserByName("New User");
+            verify(roleService).getRoleByTitle("ROLE_USER");
+            verify(encoder).encode("password123");
+            verify(userRepository).save(any(User.class));
+            verify(mapper).map(newUser, UserResponseDto.class);
+
+            System.out.println("Test createUser_SuccessfulCreation passed successfully!");
+        } catch (AssertionError e) {
+            System.out.println("Test createUser_SuccessfulCreation failed: " + e.getMessage());
+            fail("Test createUser_SuccessfulCreation failed");
+        }
+    }
+
+    @Test
+    void createUser_UserAlreadyExists() {
+        try {
+
+            UserRequestDto userRequestDto = new UserRequestDto();
+            userRequestDto.setName("Existing User");
+            userRequestDto.setEmail("existinguser@example.com");
+            userRequestDto.setPassword("password123");
+
+            when(userRepository.findUserByName("Existing User")).thenReturn(Optional.of(user));
+
+            RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+                userServiceImpl.createUser(userRequestDto);
+            });
+
+            assertEquals("User Existing User already exists", exception.getMessage());
+            verify(userRepository).findUserByName("Existing User");
+
+            System.out.println("Test createUser_UserAlreadyExists passed successfully!" );
+        } catch (AssertionError e) {
+            System.out.println("Test createUser_UserAlreadyExists failed: " + e.getMessage());
+            fail("Test createUser_UserAlreadyExists failed");
+        }
+    }
+
+    @Test
+    void createUser_MissingRequiredFields() {
+        try {
+            UserRequestDto userRequestDto = new UserRequestDto();
+            userRequestDto.setName("");
+            userRequestDto.setEmail("");
+            userRequestDto.setPassword("");
+
+            // Act & Assert
+            IllegalArgumentException exceptionName = assertThrows(IllegalArgumentException.class, () -> {
+                userServiceImpl.createUser(userRequestDto);
+            });
+            assertEquals("User name is required", exceptionName.getMessage());
+
+            userRequestDto.setName("New User");
+            IllegalArgumentException exceptionEmail = assertThrows(IllegalArgumentException.class, () -> {
+                userServiceImpl.createUser(userRequestDto);
+            });
+            assertEquals("Email is required", exceptionEmail.getMessage());
+
+            userRequestDto.setEmail("newuser@example.com");
+            IllegalArgumentException exceptionPassword = assertThrows(IllegalArgumentException.class, () -> {
+                userServiceImpl.createUser(userRequestDto);
+            });
+            assertEquals("Password is required", exceptionPassword.getMessage());
+
+            System.out.println("Test createUser_MissingRequiredFields passed successfully!");
+        } catch (AssertionError e) {
+            System.out.println("Test createUser_MissingRequiredFields failed: " + e.getMessage());
+            fail("Test createUser_MissingRequiredFields failed");
+        }
+    }
+
+
 
     @Test
     void testGetUsersFavoriteStations() {
@@ -98,4 +202,5 @@ class UserServiceImplTest {
             throw e;
         }
     }
+
 }

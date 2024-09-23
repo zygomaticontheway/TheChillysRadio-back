@@ -56,8 +56,19 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public UserResponseDto registrationUser(@RequestBody UserRequestDto user ) {
+    public UserResponseDto registrationUser(@RequestBody UserRequestDto user) {
+        if (user.getName() == null || user.getName().isEmpty()) {
+            throw new IllegalArgumentException("User name is required");
+        }
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
         return service.createUser(user);
     }
+
 
 }
