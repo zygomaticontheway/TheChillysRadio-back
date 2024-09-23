@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,20 +13,30 @@ import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.UserServiceImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AuthControllerTest {
 
     private AuthController authController;
+    private UserRequestDto userRequestDto;
+    private UserResponseDto userResponseDto;
 
     private final AuthService authService = mock(AuthService.class);
+
     private final UserServiceImpl userService = mock(UserServiceImpl.class);
 
     @BeforeEach
     void setUp() {
         authController = new AuthController(authService, userService);
+        userRequestDto = new UserRequestDto();
+        userRequestDto.setName("Test User");
+        userRequestDto.setEmail("test@example.com");
+        userRequestDto.setPassword("password123");
+
+        userResponseDto = new UserResponseDto();
+        userResponseDto.setName("Test User");
+        userResponseDto.setEmail("test@example.com");
     }
 
     @Test
@@ -37,8 +48,8 @@ class AuthControllerTest {
 
             when(authService.login(loginDto)).thenReturn(expectedResponse);
 
-            TokenResponseDto responseBody = authController.login(loginDto); // Получаем TokenResponseDto
-            ResponseEntity<TokenResponseDto> response = ResponseEntity.ok(responseBody); // Оборачиваем в ResponseEntity
+            TokenResponseDto responseBody = authController.login(loginDto);
+            ResponseEntity<TokenResponseDto> response = ResponseEntity.ok(responseBody);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -60,9 +71,9 @@ class AuthControllerTest {
 
             when(authService.login(loginDto)).thenThrow(new AuthException("Incorrect password"));
 
-            TokenResponseDto responseBody = authController.login(loginDto); // Получаем TokenResponseDto
+            TokenResponseDto responseBody = authController.login(loginDto);
             ResponseEntity<TokenResponseDto> response = ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new TokenResponseDto(null, null)); // Оборачиваем в ResponseEntity
+                    .body(new TokenResponseDto(null, null));
 
             assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
             assertNotNull(response.getBody());
@@ -109,34 +120,59 @@ class AuthControllerTest {
         }
     }
 
-//    @Test
-//    void registrationUser() {
-//        try {
-//
-//            UserRequestDto userRequestDto = new UserRequestDto();
-//            userRequestDto.setUsername("newUser");
-//            userRequestDto.setPassword("password123");
-//
-//            UserResponseDto expectedResponse = new UserResponseDto();
-//            expectedResponse.setUsername("newUser");
-//            expectedResponse.setId(1L);
-//
-//            when(userService.createUser(userRequestDto)).thenReturn(expectedResponse);
-//
-//            UserResponseDto actualResponse = authController.registrationUser(userRequestDto);
-//
-//
-//            assertNotNull(actualResponse);
-//            assertEquals(expectedResponse.getUsername(), actualResponse.getUsername());
-//            assertEquals(expectedResponse.getId(), actualResponse.getId());
-//
-//            verify(userService).createUser(userRequestDto);
-//
-//            System.out.println("Test registrationUser passed successfully!");
-//        } catch (AssertionError | Exception e) {
-//            System.out.println("Test registrationUser failed: " + e.getMessage());
-//            throw e;
-//        }
-//    }
+    @Test
+    void registrationUser_SuccessfulRegistration() {
+
+        when(userService.createUser(userRequestDto)).thenReturn(userResponseDto);
+
+        UserResponseDto response = authController.registrationUser(userRequestDto);
+
+        assertNotNull(response);
+        assertEquals(userResponseDto.getName(), response.getName());
+        assertEquals(userResponseDto.getEmail(), response.getEmail());
+        System.out.println("Test registrationUser_SuccessfulRegistration passed successfully!");
+    }
+
+    @Test
+    void registrationUser_UserAlreadyExists() {
+        when(userService.createUser(userRequestDto)).thenThrow(new RuntimeException("User Test User already exists"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            authController.registrationUser(userRequestDto);
+        });
+
+        assertEquals("User Test User already exists", exception.getMessage());
+        System.out.println("Test registrationUser_UserAlreadyExists passed successfully!");
+    }
+
+    @Test
+    public void registrationUser_EmptyFields() {
+        UserRequestDto userRequestDto = new UserRequestDto();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            authController.registrationUser(userRequestDto);
+        });
+
+        assertEquals("User name is required", exception.getMessage());
+        System.out.println("Test: 'registrationUser_EmptyFields' - user name check passed successfully.");
+
+        userRequestDto.setName("Test User");
+        userRequestDto.setEmail(null);
+        exception = assertThrows(IllegalArgumentException.class, () -> {
+            authController.registrationUser(userRequestDto);
+        });
+        assertEquals("Email is required", exception.getMessage());
+        System.out.println("Test: 'registrationUser_EmptyFields' - email check passed successfully.");
+
+        userRequestDto.setEmail("test@example.com");
+        userRequestDto.setPassword(null);
+        exception = assertThrows(IllegalArgumentException.class, () -> {
+            authController.registrationUser(userRequestDto);
+        });
+        assertEquals("Password is required", exception.getMessage());
+        System.out.println("Test: 'registrationUser_EmptyFields' - password check passed successfully!");
+    }
 
 }
+
+
