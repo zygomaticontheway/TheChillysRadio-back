@@ -22,7 +22,8 @@ springdoc:
   api-docs:
    path: /v3/api-docs        # Путь для доступа к OpenAPI спецификации
   swagger-ui:
-    path: /swagger-ui.html     # Путь для Swagger UI
+    path: /swagger-ui.html # Путь для Swagger UI
+    enabled: true
     operations-sorter: method  # Сортировка операций по HTTP методу
     display-request-duration: true  # Отображение времени выполнения запроса
     try-it-out-enabled: true   # Включение возможности "Try it out" для выполнения запросов из UI

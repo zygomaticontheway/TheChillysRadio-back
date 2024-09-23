@@ -13,10 +13,11 @@ import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.UserServiceImpl;
 
-@Tags(value = @Tag(name = "Auth"))
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Tags(value = {@Tag(name = "Auth")})
 public class AuthController {
 
     private final AuthService authService;
@@ -32,6 +33,7 @@ public class AuthController {
             return new TokenResponseDto(null, null);
         }
     }
+
     @Operation(summary = "Refresh access token", description = "Login a user by new generated access token")
     @PostMapping("/refresh")
     public TokenResponseDto getNewAccessToken(@RequestBody RefreshRequestDto dto) {
@@ -54,7 +56,7 @@ public class AuthController {
     @Operation(summary = "Register new user", description = "Register for an account")
     @PostMapping("/register")
     public UserResponseDto registrationUser(@RequestBody UserRequestDto user) {
-    public UserResponseDto registrationUser(@RequestBody UserRequestDto user) {
+
         if (user.getName() == null || user.getName().isEmpty()) {
             throw new IllegalArgumentException("User name is required");
         }
@@ -68,6 +70,5 @@ public class AuthController {
         return service.createUser(user);
     }
 
+}
 
-}
-}
