@@ -17,3 +17,16 @@ server:
     context-path: /api
 #  key_access: oxCIJkAR/pepyVVpChYM3UhUfsjY8jfkSyqp7Do9xFc=
 #  key_refresh: T8QmKiJpXwG0OCXyqJRQ0i9IN5/7G37HPmQqKyOoEd4=
+
+springdoc:
+  api-docs:
+   path: /v3/api-docs        # Путь для доступа к OpenAPI спецификации
+  swagger-ui:
+    path: /swagger-ui.html # Путь для Swagger UI
+    enabled: true
+    operations-sorter: method  # Сортировка операций по HTTP методу
+    display-request-duration: true  # Отображение времени выполнения запроса
+    try-it-out-enabled: true   # Включение возможности "Try it out" для выполнения запросов из UI
+  default-produces-media-type: application/json  # Формат данных по умолчанию
+
+
