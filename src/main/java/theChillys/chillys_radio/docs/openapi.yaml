@@ -1,0 +1,781 @@
+openapi: 3.0.0
+info:
+  title: Chilly Radio Station API
+  version: 1.0.0
+  description: API for browsing, streaming, and managing radio stations
+servers:
+  - url: https://urchin-app-jq2i7.ondigitalocean.app/api/
+    description: Production server
+tags:
+  - name: Stations
+    description: Operations related to radio stations
+  - name: Auth
+    description: User authentication and registration
+  - name: User
+    description: User profile and favorites management
+  - name: Admin
+    description: Admin operations for managing users and stations
+
+paths:
+  /stations:
+    get:
+      tags:
+        - Stations
+      summary: Find and filter radio stations
+      description: Retrieve a list of radio stations filtered by name, tag (genre), country, and language.
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search for a station by its name.
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by station genre (tag).
+        - name: country
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by station country.
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by station language.
+      responses:
+        '200':
+          description: A list of radio stations that match the search criteria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    stationuuid:
+                      type: string
+                      example: "01234567-89ab-cdef-0123-456789abcdef"
+                    name:
+                      type: string
+                      example: "Best Radio"
+                    url:
+                      type: string
+                      example: "http://www.example.com/test.pls"
+                    url_resolved:
+                      type: string
+                      example: "http://stream.example.com/mp3_128"
+                    homepage:
+                      type: string
+                      example: "https://www.example.com"
+                    favicon:
+                      type: string
+                      example: "https://www.example.com/icon.png"
+                    tags:
+                      type: string
+                      example: "jazz,pop,rock,indie"
+                    country:
+                      type: string
+                      example: "Switzerland"
+                    countrycode:
+                      type: string
+                      example: "CH"
+                    language:
+                      type: string
+                      example: "german,english"
+                    languagecodes:
+                      type: string
+                      example: "ger,eng"
+                    votes:
+                      type: integer
+                      example: 0
+                    lastchangetime:
+                      type: string
+                      example: "2019-12-12 18:37:02"
+                    codec:
+                      type: string
+                      example: "MP3"
+                    bitrate:
+                      type: integer
+                      example: 128
+                    lastcheckok:
+                      type: integer
+                      example: 1
+                    clickcount:
+                      type: integer
+                      example: 0
+        '400':
+          description: Invalid query parameter.
+        '404':
+          description: No stations found.
+
+
+  /stations/{id}/stream:
+    get:
+      tags:
+        - Stations
+      summary: Stream a selected radio station
+      description: Stream the live audio of the radio station
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Station UUID
+      responses:
+        '200':
+          description: Streaming URL of the selected station
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url_resolved:
+                    type: string
+                    description: URL to stream the radio station
+
+  /stations/top-votes:
+    get:
+      tags:
+        - Stations
+      summary: View stations by top votes (ratings)
+      description: Returns a list of stations with the highest votes
+      responses:
+        '200':
+          description: List of stations by top votes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+
+  /stations/top-clicks:
+    get:
+      tags:
+        - Stations
+      summary: Get top radio stations by clicks
+      description: Retrieve a list of the most popular radio stations based on the number of clicks.
+      responses:
+        '200':
+          description: A list of the top radio stations by clicks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    stationuuid:
+                      type: string
+                      example: "01234567-89ab-cdef-0123-456789abcdef"
+                    name:
+                      type: string
+                      example: "Best Radio"
+                    url:
+                      type: string
+                      example: "http://www.example.com/test.pls"
+                    url_resolved:
+                      type: string
+                      example: "http://stream.example.com/mp3_128"
+                    homepage:
+                      type: string
+                      example: "https://www.example.com"
+                    favicon:
+                      type: string
+                      example: "https://www.example.com/icon.png"
+                    tags:
+                      type: string
+                      example: "jazz,pop,rock,indie"
+                    country:
+                      type: string
+                      example: "Switzerland"
+                    countrycode:
+                      type: string
+                      example: "CH"
+                    state:
+                      type: string
+                      example: ""
+                    language:
+                      type: string
+                      example: "german,english"
+                    languagecodes:
+                      type: string
+                      example: "ger,eng"
+                    votes:
+                      type: integer
+                      example: 0
+                    lastchangetime:
+                      type: string
+                      example: "2019-12-12 18:37:02"
+                    codec:
+                      type: string
+                      example: "MP3"
+                    bitrate:
+                      type: integer
+                      example: 128
+                    lastcheckok:
+                      type: integer
+                      example: 1
+                    clickcount:
+                      type: integer
+                      example: 0
+        '400':
+          description: Invalid request.
+        '404':
+          description: No stations found.
+
+
+  /stations/{id}:
+    get:
+      tags:
+        - Stations
+      summary: View detailed information about a radio station
+      description: Provides extended information about the selected station
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Station UUID
+      responses:
+        '200':
+          description: Detailed station information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Log in to save station lists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register for an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/my-profile:
+    get:
+      tags:
+        - User
+      summary: View and edit user profile
+      description: Returns user profile data with options to edit
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/my-favorites:
+    get:
+      tags:
+        - User
+      summary: View favorite radio stations
+      description: Returns a list of user’s favorite stations
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of favorite stations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+
+    post:
+      tags:
+        - User
+      summary: Add or remove a station from favorites
+      description: Allows a user to add or remove a radio station from their list of favorites.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "user_id"
+                stationuuid:
+                  type: string
+                  example: "01234567-89ab-cdef-0123-456789abcdef"
+      responses:
+        '200':
+          description: Successfully updated the user's favorites.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "user_id"
+                  name:
+                    type: string
+                    example: "John Doe"
+                  email:
+                    type: string
+                    example: "john@example.com"
+                  password:
+                    type: string
+                    example: "user_password"
+                  favorites:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        stationuuid:
+                          type: string
+                          example: "01234567-89ab-cdef-0123-456789abcdef"
+                        name:
+                          type: string
+                          example: "Best Radio"
+                        url:
+                          type: string
+                          example: "http://www.example.com/test.pls"
+                        url_resolved:
+                          type: string
+                          example: "http://stream.example.com/mp3_128"
+                        homepage:
+                          type: string
+                          example: "https://www.example.com"
+                        favicon:
+                          type: string
+                          example: "https://www.example.com/icon.png"
+                        tags:
+                          type: string
+                          example: "jazz,pop,rock,indie"
+                        country:
+                          type: string
+                          example: "Switzerland"
+                        countrycode:
+                          type: string
+                          example: "CH"
+                        state:
+                          type: string
+                          example: ""
+                        language:
+                          type: string
+                          example: "german,english"
+                        languagecodes:
+                          type: string
+                          example: "ger,eng"
+                        votes:
+                          type: integer
+                          example: 0
+                        lastchangetime:
+                          type: string
+                          example: "2019-12-12 18:37:02"
+                        codec:
+                          type: string
+                          example: "MP3"
+                        bitrate:
+                          type: integer
+                          example: 128
+                        lastcheckok:
+                          type: integer
+                          example: 1
+                        clickcount:
+                          type: integer
+                          example: 0
+        '400':
+          description: Invalid request.
+        '401':
+          description: Unauthorized request.
+        '403':
+          description: Forbidden request.
+
+
+
+  /stations/{id}/vote:
+    post:
+      tags:
+        - Stations
+      summary: Vote for a radio station
+      description: Express your positive feedback for a station
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Station UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stationuuid:
+                  type: string
+                  description: Unique identifier of the station
+      responses:
+        '200':
+          description: Vote successfully processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: string
+                  message:
+                    type: string
+
+  /auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: Log out from the system
+      responses:
+        '200':
+          description: Successfully logged out
+
+
+  /users:
+    get:
+      tags:
+        - Admin
+      summary: Get the list of users
+      description: Retrieve the list of all users in the system.
+      responses:
+        '200':
+          description: List of users retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "1"
+                    name:
+                      type: string
+                      example: "John Doe"
+                    email:
+                      type: string
+                      example: "john@example.com"
+                    status:
+                      type: string
+                      example: "active"
+        '404':
+          description: Users not found.
+
+
+
+  /users/{id}/password-change:
+    post:
+      tags:
+        - Admin
+      summary: Change the password of a specific user
+      description: Allows an admin to change the password for a specific user.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "23"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "newpassword123"
+      responses:
+        '200':
+          description: Password changed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "23"
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Password has been changed"
+        '404':
+          description: User not found.
+        '400':
+          description: Invalid request.
+
+  /users/{id}:
+    get:
+      tags:
+        - Admin
+      summary: Get details of a specific user
+      description: Retrieve information for a specific user by their ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "1"
+          description: ID of the user
+      responses:
+        '200':
+          description: User details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "1"
+                  name:
+                    type: string
+                    example: "John Doe"
+                  email:
+                    type: string
+                    example: "john@example.com"
+                  status:
+                    type: string
+                    example: "active"
+        '404':
+          description: User not found.
+        '400':
+          description: Invalid request.
+    put:
+      tags:
+        - Admin
+      summary: Edit user details
+      description: Update a specific user’s details including roles or account status.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "34"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Alex"
+                email:
+                  type: string
+                  example: "alex@alex.al"
+                active:
+                  type: boolean
+                  example: true
+                role:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "2"
+                      title:
+                        type: string
+                        example: "UNAUTHORISED"
+      responses:
+        '200':
+          description: User details updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "34"
+                  name:
+                    type: string
+                    example: "Alex"
+                  email:
+                    type: string
+                    example: "alex@alex.al"
+                  active:
+                    type: boolean
+                    example: true
+                  role:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "2"
+                        title:
+                          type: string
+                          example: "UNAUTHORISED"
+        '404':
+          description: User not found.
+        '400':
+          description: Invalid request.
+
+  /sources/{id}/stations:
+    get:
+      tags:
+        - Admin
+      summary: Update the list of radio stations from a source
+      description: Refresh the list of radio stations from a specified source.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "1"
+          description: ID of the source
+      responses:
+        '200':
+          description: Stations updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  stations_count:
+                    type: integer
+                    example: 60234
+        '404':
+          description: Source not found.
+        '400':
+          description: Invalid request.
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Station:
+      type: object
+      properties:
+        stationuuid:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        url_resolved:
+          type: string
+        homepage:
+          type: string
+        favicon:
+          type: string
+        tags:
+          type: string
+        country:
+          type: string
+        countrycode:
+          type: string
+        language:
+          type: string
+        languagecodes:
+          type: string
+        votes:
+          type: integer
+        codec:
+          type: string
+        bitrate:
+          type: integer
+        lastcheckok:
+          type: integer
+        clickcount:
+          type: integer
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        favorites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+
+  

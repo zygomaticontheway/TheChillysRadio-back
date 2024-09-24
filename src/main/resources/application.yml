@@ -16,3 +16,14 @@ spring:
 server:
   servlet:
     context-path: /api
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: method
+    display-request-duration: true
+    try-it-out-enabled: true
+  default-produces-media-type: application/json

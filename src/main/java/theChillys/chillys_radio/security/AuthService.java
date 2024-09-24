@@ -3,8 +3,6 @@ package theChillys.chillys_radio.security;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.user.entity.User;
@@ -63,31 +61,6 @@ public class AuthService {
         }
 
     }
-
- //   public void logout(String token) {
- //       Claims claims = tokenService.getRefreshClaims(token);
- //      String username = claims.getSubject();
-
-  //      refreshTokenStorage.remove(username);
-   // }
-
-  //  public void logout(String refreshToken) {
-  //      // Проверить валидность refresh-токена
-  //      Claims claims = tokenService.getRefreshClaims(refreshToken);
-
-   //     if (claims != null) {
-            // Извлечь информацию о пользователе из токена
-    //        String userId = claims.getSubject();
-
-            // Удалить refresh-токен пользователя
-     //       refreshTokenStorage.remove(userId);
-
-            // Здесь можно добавить дополнительные действия, например, логирование
-    //        System.out.println("User " + userId + " has logged out.");
-    //    } else {
-    //        throw new IllegalArgumentException("Invalid token");
-    //    }
-  //  }
 
 
 }

@@ -1,5 +1,6 @@
 package theChillys.chillys_radio.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,7 +15,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -23,6 +23,7 @@ public class UserController {
     @Autowired
     @Qualifier("userServiceImpl")
     private final IUserService service;
+
 
     @GetMapping("/users")
     public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
