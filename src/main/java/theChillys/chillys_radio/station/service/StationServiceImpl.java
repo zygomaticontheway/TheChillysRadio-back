@@ -127,14 +127,24 @@ public class StationServiceImpl implements IStationService {
         return new StationUrlDto(urlResolved);
     }
 
-        @Override
-        public List<StationResponseDto> findStationByNameTagsCountryLanguage(String name, String tags, String country, String language) {
-            List<Station> stations = repository.findStationByNameOrTagsOrCountryOrLanguage(name, tags, country, language);
 
-            return stations.stream()
-                    .map(station -> mapper.map(station, StationResponseDto.class))
-                    .toList();
+    @Override
+    public Page<Station> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable) {
+        if ((name == null || name.isEmpty()) && (tags == null || tags.isEmpty()) &&
+                (country == null || country.isEmpty()) && (language == null || language.isEmpty())) {
+            return repository.findAll(pageable);
+
         }
+        return repository.findByNameContainingIgnoreCaseAndTagsContainingIgnoreCaseAndCountryContainsIgnoreCaseAndLanguageContainingIgnoreCase(
+                name == null ? "" : name,
+                tags == null ? "" : tags,
+                country == null ? "" : country,
+                language == null ? "" : language,
+                pageable);
+
+        }
+
+
 }
 
 
