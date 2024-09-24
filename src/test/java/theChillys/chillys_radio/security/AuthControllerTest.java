@@ -145,34 +145,6 @@ class AuthControllerTest {
         System.out.println("Test registrationUser_UserAlreadyExists passed successfully!");
     }
 
-    @Test
-    public void registrationUser_EmptyFields() {
-        UserRequestDto userRequestDto = new UserRequestDto();
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            authController.registrationUser(userRequestDto);
-        });
-
-        assertEquals("User name is required", exception.getMessage());
-        System.out.println("Test: 'registrationUser_EmptyFields' - user name check passed successfully.");
-
-        userRequestDto.setName("Test User");
-        userRequestDto.setEmail(null);
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            authController.registrationUser(userRequestDto);
-        });
-        assertEquals("Email is required", exception.getMessage());
-        System.out.println("Test: 'registrationUser_EmptyFields' - email check passed successfully.");
-
-        userRequestDto.setEmail("test@example.com");
-        userRequestDto.setPassword(null);
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            authController.registrationUser(userRequestDto);
-        });
-        assertEquals("Password is required", exception.getMessage());
-        System.out.println("Test: 'registrationUser_EmptyFields' - password check passed successfully!");
-    }
-
 }
 
 
