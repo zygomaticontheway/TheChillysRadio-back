@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,18 +56,7 @@ public class AuthController {
 
     @Operation(summary = "Register new user", description = "Register for an account")
     @PostMapping("/register")
-    public UserResponseDto registrationUser(@RequestBody UserRequestDto user) {
-
-        if (user.getName() == null || user.getName().isEmpty()) {
-            throw new IllegalArgumentException("User name is required");
-        }
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-
+    public UserResponseDto registrationUser(@Valid @RequestBody UserRequestDto user) {
         return service.createUser(user);
     }
 
