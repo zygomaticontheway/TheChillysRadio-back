@@ -4,7 +4,8 @@ package theChillys.chillys_radio.station.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -14,7 +15,6 @@ import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.service.IStationService;
-import theChillys.chillys_radio.user.dto.UserResponseDto;
 
 import java.util.List;
 
@@ -56,21 +56,27 @@ public class StationController {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
-    @GetMapping("/stations")
-    public List<StationResponseDto> findStationsByNameTagsCountryLanguage(
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "tags", required = false) String tags,
-            @RequestParam(value = "country", required = false) String country,
-            @RequestParam(value = "language", required = false) String language) {
 
-        return service.findStationByNameTagsCountryLanguage(name, tags, country, language);
-    }
-
-    @GetMapping("/stations/paginated")   //example: GET /api/stations/paginated?page=1&size=30
+    @GetMapping("/stations")   //example: GET /api/stations?page=1&size=20 or /api/stations?page=2
     public ResponseEntity<Page<StationResponseDto>> getAllStations(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "30") int size) {
+            @RequestParam(defaultValue = "20") int size) {
         Page<StationResponseDto> stations = service.getAllStations(page, size);
         return ResponseEntity.ok(stations);
     }
+
+    @GetMapping("/stations/search")   //example :GET /api/search?country=finland&language=german
+    public ResponseEntity<Page<Station>> getStationsWithFilters(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String tags,
+            @RequestParam(name = "country", required = false) String country,
+            @RequestParam(name = "language", required = false) String language,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Station> stationPage = service.getStationsWithFilters(name, tags, country, language, pageable);
+        return ResponseEntity.ok(stationPage);
+    }
+
+
 }
