@@ -65,7 +65,7 @@ public class StationController {
         return ResponseEntity.ok(stations);
     }
 
-    @GetMapping("/search")   //example :GET /api/search?country=finland&language=german
+    @GetMapping("/stations/search")   //example :GET /api/search?country=finland&language=german
     public ResponseEntity<Page<Station>> getStationsWithFilters(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String tags,
