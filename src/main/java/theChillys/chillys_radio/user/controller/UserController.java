@@ -24,7 +24,7 @@ public class UserController {
     @Qualifier("userServiceImpl")
     private final IUserService service;
 
-
+    @Operation(summary = "Find user", description = "Find a user by his username or password")
     @GetMapping("/users")
     public List<UserResponseDto> findUsersByNameOrEmail(@RequestParam(required = false) String name,
                                                         @RequestParam(required = false) String email) {

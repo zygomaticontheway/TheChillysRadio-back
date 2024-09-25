@@ -18,7 +18,7 @@ import theChillys.chillys_radio.user.service.UserServiceImpl;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tags(value = {@Tag(name = "Auth")})
+@Tags(value = {@Tag(name = "auth_controller")})
 public class AuthController {
 
     private final AuthService authService;
