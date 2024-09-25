@@ -1,6 +1,8 @@
 package theChillys.chillys_radio.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@Tags(value = {@Tag(name = "user_controller")})
 public class UserController {
 
 
