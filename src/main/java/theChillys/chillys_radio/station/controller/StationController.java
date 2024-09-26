@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -17,6 +18,7 @@ import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.service.IStationService;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -76,6 +78,25 @@ public class StationController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Station> stationPage = service.getStationsWithFilters(name, tags, country, language, pageable);
         return ResponseEntity.ok(stationPage);
+    }
+
+
+    @GetMapping("/stations/tags")
+    public ResponseEntity<Map<String, Long>> getTopTags(@RequestParam(required = false) String name) {
+        Map<String, Long> topTags = service.getTagsWithStationCount(name);
+        return ResponseEntity.ok(topTags);
+    }
+
+    @GetMapping("/stations/countries")
+    public ResponseEntity<Map<String, Long>> getTopСountries(@RequestParam(required = false) String name) {
+        Map<String, Long> topСountries = service.getCountriesWithStationCount(name);
+        return ResponseEntity.ok(topСountries);
+    }
+
+    @GetMapping("/stations/languages")
+    public ResponseEntity<Map<String, Long>> getTopcountriesLanguages(@RequestParam(required = false) String name) {
+        Map<String, Long> topLanguages = service.getLanguagesWithStationCount(name);
+        return ResponseEntity.ok(topLanguages);
     }
 
 

@@ -17,8 +17,14 @@ import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.repository.IStationRepository;
 
+import java.util.LinkedHashMap;
+
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -142,7 +148,55 @@ public class StationServiceImpl implements IStationService {
                 language == null ? "" : language,
                 pageable);
 
-        }
+    }
+
+    @Override
+    public Map<String, Long> getTagsWithStationCount(String name) {
+        List<Station> stations = repository.findAll();
+
+        Map<String, Long> tagCounts = stations.stream()
+                .flatMap(station -> Arrays.stream(station.getTags().split(",")))
+                .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
+                .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));
+
+        return tagCounts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
+
+    @Override
+    public Map<String, Long> getCountriesWithStationCount(String name) {
+        List<Station> stations = repository.findAll();
+
+        Map<String, Long> countriesCounts = stations.stream()
+                .map(station -> station.getCountry())
+                .filter(country -> country != null && !country.trim().isEmpty())
+                .collect(Collectors.groupingBy(country -> country, Collectors.counting()));
+
+        return countriesCounts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
+
+
+    @Override
+    public Map<String, Long> getLanguagesWithStationCount(String name) {
+        List<Station> stations = repository.findAll();
+
+        Map<String, Long> languagesCounts = stations.stream()
+                .flatMap(station -> Arrays.stream(station.getLanguage().split("[, /]")))
+                .map(String::trim)
+                .filter(language -> !language.isEmpty())
+                .collect(Collectors.groupingBy(language -> language, Collectors.counting()));
+
+        return languagesCounts.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
 
 
 }
