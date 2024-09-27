@@ -151,7 +151,7 @@ public class StationServiceImpl implements IStationService {
     }
 
     @Override
-    public Map<String, Long> getTagsWithStationCount(String name) {
+    public Map<String, Long> getTagsWithStationCount() {
         List<Station> stations = repository.findAll();
 
         Map<String, Long> tagCounts = stations.stream()
@@ -167,7 +167,7 @@ public class StationServiceImpl implements IStationService {
 
 
     @Override
-    public Map<String, Long> getCountriesWithStationCount(String name) {
+    public Map<String, Long> getCountriesWithStationCount() {
         List<Station> stations = repository.findAll();
 
         Map<String, Long> countriesCounts = stations.stream()
@@ -183,7 +183,7 @@ public class StationServiceImpl implements IStationService {
 
 
     @Override
-    public Map<String, Long> getLanguagesWithStationCount(String name) {
+    public Map<String, Long> getLanguagesWithStationCount() {
         List<Station> stations = repository.findAll();
 
         Map<String, Long> languagesCounts = stations.stream()

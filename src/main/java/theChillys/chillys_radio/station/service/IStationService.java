@@ -28,11 +28,11 @@ public interface IStationService {
 
     Page<Station> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable);
 
-    Map<String, Long> getTagsWithStationCount(String name);
+    Map<String, Long> getTagsWithStationCount();
 
-    Map<String, Long> getCountriesWithStationCount(String name);
+    Map<String, Long> getCountriesWithStationCount();
 
-    Map<String, Long> getLanguagesWithStationCount(String name);
+    Map<String, Long> getLanguagesWithStationCount();
 
 
 

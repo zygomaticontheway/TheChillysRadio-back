@@ -82,20 +82,20 @@ public class StationController {
 
 
     @GetMapping("/stations/tags")
-    public ResponseEntity<Map<String, Long>> getTopTags(@RequestParam(required = false) String name) {
-        Map<String, Long> topTags = service.getTagsWithStationCount(name);
+    public ResponseEntity<Map<String, Long>> getTopTags() {
+        Map<String, Long> topTags = service.getTagsWithStationCount();
         return ResponseEntity.ok(topTags);
     }
 
     @GetMapping("/stations/countries")
-    public ResponseEntity<Map<String, Long>> getTopСountries(@RequestParam(required = false) String name) {
-        Map<String, Long> topСountries = service.getCountriesWithStationCount(name);
+    public ResponseEntity<Map<String, Long>> getTopСountries() {
+        Map<String, Long> topСountries = service.getCountriesWithStationCount();
         return ResponseEntity.ok(topСountries);
     }
 
     @GetMapping("/stations/languages")
-    public ResponseEntity<Map<String, Long>> getTopcountriesLanguages(@RequestParam(required = false) String name) {
-        Map<String, Long> topLanguages = service.getLanguagesWithStationCount(name);
+    public ResponseEntity<Map<String, Long>> getTopcountriesLanguages() {
+        Map<String, Long> topLanguages = service.getLanguagesWithStationCount();
         return ResponseEntity.ok(topLanguages);
     }
 
