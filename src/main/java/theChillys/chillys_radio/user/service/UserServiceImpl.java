@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -42,22 +41,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserResponseDto getUsersFavoriteStations(Long userId) {
+    public List<StationResponseDto> getUsersFavoriteStations(Long userId) {
 
-        User user = findUserById(userId);
+        UserResponseDto user = getUserById(userId).orElseThrow(() -> new UserNotFoundException("User with id:" + userId + " not found"));
+        List<StationResponseDto> favoriteStationsDto = user.getFavorites();
 
-        List<StationResponseDto> favoriteStationsDto = user.getFavorites().stream()
-                .map(st -> mapper.map(st, StationResponseDto.class))
-                .collect(Collectors.toList());
-
-        Set<Role> roles = user.getRoles();
-
-        return new UserResponseDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                favoriteStationsDto,
-                roles);
+        return favoriteStationsDto;
     }
 
     @Override

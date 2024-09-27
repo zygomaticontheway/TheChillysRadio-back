@@ -1,11 +1,11 @@
 package theChillys.chillys_radio.user.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.user.dto.ChangePasswordDto;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/favorites")
-    public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
+    public List<StationResponseDto> getUsersFavoriteStations(@PathVariable Long userId) {
         return service.getUsersFavoriteStations(userId);
     }
 
@@ -76,10 +76,7 @@ public class UserController {
     public UserResponseDto getUserProfile(Principal principal) {
         String name = principal.getName();
 
-        UserResponseDto userResponseDtoByName = service.getUserResponseDtoByName(name);
-        Long id1 = userResponseDtoByName.getId();
-        return getUsersFavoriteStations(id1);
-
+        return service.getUserResponseDtoByName(name);
     }
 
 }
