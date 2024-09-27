@@ -191,8 +191,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public boolean toggleFavoriteStation(Long id, String stationuuid) {
-        User user = findUserById(id);
+    public boolean toggleFavoriteStation(Long userId, String stationuuid) {
+        User user = findUserById(userId);
         if (stationRepository.findByStationuuid(stationuuid).isPresent()) {
             Station station = stationRepository.findByStationuuid(stationuuid).get();
 

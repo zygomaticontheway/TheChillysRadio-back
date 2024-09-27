@@ -46,8 +46,13 @@ public class UserController {
     }
 
     @PostMapping("/users/my-favorites")
-    public boolean toggleFavoriteStation(@RequestParam Long id, @RequestParam String stationuuid) {
-        return service.toggleFavoriteStation(id, stationuuid);
+    public boolean toggleFavoriteStation(@RequestParam Long userId, @RequestParam String stationuuid) {
+        return service.toggleFavoriteStation(userId, stationuuid);
+    }
+
+    @GetMapping("/users/my-favorites")
+    public List<StationResponseDto> getUsersFavoriteStations(@RequestParam Long userId) {
+        return service.getUsersFavoriteStations(userId);
     }
 
     @PutMapping("/users/{id}")
@@ -65,11 +70,6 @@ public class UserController {
     @PutMapping("/set-admin/{name}")
     public UserResponseDto setAdminRole(@PathVariable(name = "name") String name) {
         return service.setAdminRole(name);
-    }
-
-    @GetMapping("/users/{userId}/favorites")
-    public List<StationResponseDto> getUsersFavoriteStations(@PathVariable Long userId) {
-        return service.getUsersFavoriteStations(userId);
     }
 
     @GetMapping("/users/my-profile")
