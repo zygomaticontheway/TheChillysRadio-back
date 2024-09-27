@@ -9,6 +9,7 @@ import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.entity.Station;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IStationService {
     List<StationResponseDto> getAllStationsByTopClicks();
@@ -26,5 +27,13 @@ public interface IStationService {
     StationUrlDto getStreamUrl(String stationuuid);
 
     Page<Station> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable);
+
+    Map<String, Long> getTagsWithStationCount();
+
+    Map<String, Long> getCountriesWithStationCount();
+
+    Map<String, Long> getLanguagesWithStationCount();
+
+
 
 }
