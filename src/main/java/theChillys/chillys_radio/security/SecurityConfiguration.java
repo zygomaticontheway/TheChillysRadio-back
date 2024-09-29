@@ -51,7 +51,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/click/{stationuuid}").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/vote/{stationuuid}").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/stations").permitAll()
-                                .anyRequest().permitAll() //все остальные запросы доступны только авторизованным пользователям
+                                .anyRequest().authenticated() //все остальные запросы доступны только авторизованным пользователям
                 ).addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
 
         return http.build();
