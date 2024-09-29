@@ -6,11 +6,14 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
+
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import theChillys.chillys_radio.exception.UserAlreadyExistsException;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 import theChillys.chillys_radio.user.service.UserServiceImpl;
@@ -60,8 +63,21 @@ public class AuthController {
 
     @Operation(summary = "Register new user", description = "Register for an account")
     @PostMapping("/register")
-    public UserResponseDto registrationUser(@Valid @RequestBody UserRequestDto user) {
-        return service.createUser(user);
+    public ResponseEntity<?> registrationUser(@Validated @RequestBody UserRequestDto user) {
+        try {
+            UserResponseDto newUser = service.createUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("A user with this name already exists");
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid user data: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while registering a user");
+        }
     }
 
 }

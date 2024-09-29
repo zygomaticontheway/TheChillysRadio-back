@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import theChillys.chillys_radio.exception.UserAlreadyExistsException;
 import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
@@ -71,7 +72,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         }
 
         repository.findUserByName(dto.getName()).ifPresent(u -> {
-            throw new RuntimeException("User " + dto.getName() + " already exists");
+            throw new UserAlreadyExistsException("User " + dto.getName() + " already exists");
         });
 
         Role role = roleService.getRoleByTitle("ROLE_USER");
