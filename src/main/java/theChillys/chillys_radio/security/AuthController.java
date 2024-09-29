@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
@@ -26,14 +27,17 @@ public class AuthController {
 
     @Operation(summary = "Login user", description = "Login a user by their username and password")
     @PostMapping("/login")
-    public TokenResponseDto login(@RequestBody UserLoginDto user) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDto user) {
         try {
-            return authService.login(user);
+            TokenResponseDto tokens = authService.login(user);
+            return ResponseEntity.ok(tokens);
 
         } catch (AuthException e) {
-            return new TokenResponseDto(null, null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password");
         }
     }
+
 
     @Operation(summary = "Refresh access token", description = "Login a user by new generated access token")
     @PostMapping("/refresh")
