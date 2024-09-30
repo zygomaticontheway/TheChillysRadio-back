@@ -22,13 +22,13 @@ public interface IUserService {
     Optional<UserResponseDto> getUserById(Long id);
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
-    List<StationResponseDto> getUsersFavoriteStations(Long userId);
+    List<StationResponseDto> getUsersFavoriteStations(String name);
 
     UserResponseDto setAdminRole(String name);
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 
-    boolean toggleFavoriteStation(Long userId, String stationuuid);
+    boolean toggleFavoriteStation(String name, String stationuuid);
 
     UserResponseDto getUserResponseDtoByName(String name);
 

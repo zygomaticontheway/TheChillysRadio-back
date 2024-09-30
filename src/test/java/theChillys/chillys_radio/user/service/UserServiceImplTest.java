@@ -179,13 +179,14 @@ class UserServiceImplTest {
         stationResponseDto.setStationuuid("stationUuid");
         stationResponseDto.setName("Test Station");
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findUserByName("admin")).thenReturn(Optional.of(user));
         when(mapper.map(station, StationResponseDto.class)).thenReturn(stationResponseDto);
 
-        List<StationResponseDto> responseDto = userServiceImpl.getUsersFavoriteStations(1L);
+        List<StationResponseDto> responseDto = userServiceImpl.getUsersFavoriteStations("admin");
 
         try {
             assertNotNull(responseDto, "UserResponseDto must not be null");
+            //TODO Не обязательно у пользователя станции в избранном быть должны. Чаще всего их там не будет. Нужно переписать тест
             assertEquals(1, responseDto.size(), "User must have 1 favorite station");
 
             verify(userRepository).findById(1L);

@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.user.dto.ChangePasswordDto;
@@ -45,14 +48,21 @@ public class UserController {
         return service.getUserById(userId);
     }
 
-    @PostMapping("/users/my-favorites")
-    public boolean toggleFavoriteStation(@RequestParam Long userId, @RequestParam String stationuuid) {
-        return service.toggleFavoriteStation(userId, stationuuid);
+    @GetMapping("/users/my-favorites")
+    public List<StationResponseDto> getUsersFavoriteStations( Principal principal) {
+
+        String name = principal.getName();
+
+        return service.getUsersFavoriteStations(name);
     }
 
-    @GetMapping("/users/my-favorites")
-    public List<StationResponseDto> getUsersFavoriteStations(@RequestParam Long userId) {
-        return service.getUsersFavoriteStations(userId);
+    @PostMapping("/users/my-favorites")
+    public boolean toggleFavoriteStation(@RequestBody String stationuuid, Principal principal) {
+
+        String name = principal.getName();
+        System.out.println("___ stationuuid from request: " + stationuuid);
+
+        return service.toggleFavoriteStation(name, stationuuid);
     }
 
     @PutMapping("/users/{id}")

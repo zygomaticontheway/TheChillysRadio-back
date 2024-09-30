@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")// permitAll = разрешить всем
                                 .requestMatchers(HttpMethod.GET, "/users/my-favorites").hasAnyRole("USER", "ADMIN") //hasAnyRole("USER") = разрешить только пользователям с перечисленными ролями  (да отбрасываем ROLE_)
-                                .requestMatchers(HttpMethod.POST, "/users/my-favorites").hasAnyRole("USER", "ADMIN") //hasAnyRole("USER") = разрешить только пользователям с перечисленными ролями  (да отбрасываем ROLE_)
+                                .requestMatchers(HttpMethod.POST, "/users/my-favorites").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
@@ -53,7 +53,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/vote/{stationuuid}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations").permitAll()
                                 .anyRequest().permitAll() //все остальные запросы доступны только авторизованным пользователям
-                ).addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
+                ).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
 
         return http.build();
     }
