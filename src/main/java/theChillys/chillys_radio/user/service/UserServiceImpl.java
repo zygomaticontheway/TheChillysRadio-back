@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import theChillys.chillys_radio.exception.UserAlreadyExistsException;
+import theChillys.chillys_radio.exception.StationNotFoundException;
 import theChillys.chillys_radio.exception.UserNotFoundException;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
@@ -42,15 +42,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public List<StationResponseDto> getUsersFavoriteStations(Long userId) {
-
-        UserResponseDto user = getUserById(userId).orElseThrow(() -> new UserNotFoundException("User with id:" + userId + " not found"));
-        List<StationResponseDto> favoriteStationsDto = user.getFavorites();
-
-        return favoriteStationsDto;
-    }
-
-    @Override
     public List<UserResponseDto> getUsers() {
         List<User> customers = repository.findAll();
 
@@ -72,7 +63,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         }
 
         repository.findUserByName(dto.getName()).ifPresent(u -> {
-            throw new UserAlreadyExistsException("User " + dto.getName() + " already exists");
+            throw new RuntimeException("User " + dto.getName() + " already exists");
         });
 
         Role role = roleService.getRoleByTitle("ROLE_USER");
@@ -90,7 +81,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
         return mapper.map(savedUser, UserResponseDto.class);
     }
-
 
 
     @Override
@@ -162,25 +152,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     public UserResponseDto getUserResponseDtoByName(String name) {
-        Optional<User> userOptional = repository.findUserByName(name);
 
-        if (userOptional.isPresent()) {
+        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with name: " + name + " not found"));
 
-            UserResponseDto dto = new UserResponseDto();
-            dto.setId(userOptional.get().getId());
-            dto.setName(userOptional.get().getName());
-            dto.setEmail(userOptional.get().getEmail());
-            List<StationResponseDto> favoriteStationDTOList = userOptional.get().getFavorites().stream()
-                    .map(station -> new StationResponseDto())
-                    .toList();
-            dto.setFavorites(favoriteStationDTOList);
-            dto.setRoles(userOptional.get().getRoles());
+        return mapper.map(user, UserResponseDto.class);
 
-            return dto;
-
-        } else {
-            throw new UserNotFoundException("User with name " + name + " not found");
-        }
     }
 
     //как spring получает User по логину - логин - это name!
@@ -192,26 +168,33 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public boolean toggleFavoriteStation(Long id, String stationuuid) {
-        User user = findUserById(id);
-        if (stationRepository.findByStationuuid(stationuuid).isPresent()) {
-            Station station = stationRepository.findByStationuuid(stationuuid).get();
+    public List<StationResponseDto> getUsersFavoriteStations(String name) {
 
-            //.orElseThrow(() -> new RuntimeException("Station not found with UUID: " + stationuuid));
+        UserResponseDto user = getUserResponseDtoByName(name);
 
-            if (user.getFavorites().contains(station)) {
+        System.out.println("?????----- founded user in getUsersFavoriteStations: " + user);
+        List<StationResponseDto> favoriteStationsDto = user.getFavorites();
+        System.out.println("?????----- his stations getUsersFavoriteStations: " + favoriteStationsDto);
 
-                user.getFavorites().remove(station);
-                repository.save(user);
-                return false;
-            } else {
-                user.getFavorites().add(station);
-                repository.save(user);
-                return true;
-            }
-        } return false;
+        return favoriteStationsDto;
+    }
+
+    @Override
+    public List<StationResponseDto> toggleFavoriteStation(String name, String stationuuid) {
+
+        User user = repository.findUserByName(name).orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+        Station station = stationRepository.findByStationuuid(stationuuid).orElseThrow(() -> new StationNotFoundException("Station with stationuuid: " + stationuuid + " not exist"));
+
+        if (user.getFavorites().contains(station)) {
+            System.out.println("-------Favorite stations BEFORE remove:" + user.getFavorites());
+            user.getFavorites().remove(station);
+            System.out.println("-------Favorite stations AFTER remove:" + user.getFavorites());
+        } else {
+            System.out.println("--+++--Favorite stations BEFORE add:" + user.getFavorites());
+            user.getFavorites().add(station);
+            System.out.println("--+++--Favorite stations AFTER add:" + user.getFavorites());
+        }
+        repository.save(user);
+        return getUsersFavoriteStations(name);
     }
 }
-
-
-
