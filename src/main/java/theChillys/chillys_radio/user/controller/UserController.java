@@ -57,10 +57,9 @@ public class UserController {
     }
 
     @PostMapping("/users/my-favorites")
-    public boolean toggleFavoriteStation(@RequestBody String stationuuid, Principal principal) {
+    public List<StationResponseDto> toggleFavoriteStation(@RequestBody String stationuuid, Principal principal) {
 
         String name = principal.getName();
-        System.out.println("___ stationuuid from request: " + stationuuid);
 
         return service.toggleFavoriteStation(name, stationuuid);
     }

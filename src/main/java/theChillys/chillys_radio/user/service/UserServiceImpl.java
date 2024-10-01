@@ -152,19 +152,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     public UserResponseDto getUserResponseDtoByName(String name) {
-        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with name: " + name + " not found"));
 
-//        if (userOptional.isPresent()) {
-//
-//            UserResponseDto dto = new UserResponseDto();
-//            dto.setId(userOptional.get().getId());
-//            dto.setName(userOptional.get().getName());
-//            dto.setEmail(userOptional.get().getEmail());
-//            List<StationResponseDto> favoriteStationDTOList = userOptional.get().getFavorites().stream()
-//                    .map(station -> mapper.map(station, StationResponseDto.class))
-//                    .toList();
-//            dto.setFavorites(favoriteStationDTOList);
-//            dto.setRoles(userOptional.get().getRoles());
+        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with name: " + name + " not found"));
 
         return mapper.map(user, UserResponseDto.class);
 
@@ -191,7 +180,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public boolean toggleFavoriteStation(String name, String stationuuid) {
+    public List<StationResponseDto> toggleFavoriteStation(String name, String stationuuid) {
 
         User user = repository.findUserByName(name).orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
         Station station = stationRepository.findByStationuuid(stationuuid).orElseThrow(() -> new StationNotFoundException("Station with stationuuid: " + stationuuid + " not exist"));
@@ -200,14 +189,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             System.out.println("-------Favorite stations BEFORE remove:" + user.getFavorites());
             user.getFavorites().remove(station);
             System.out.println("-------Favorite stations AFTER remove:" + user.getFavorites());
-            repository.save(user);
-            return false;
         } else {
             System.out.println("--+++--Favorite stations BEFORE add:" + user.getFavorites());
             user.getFavorites().add(station);
             System.out.println("--+++--Favorite stations AFTER add:" + user.getFavorites());
-            repository.save(user);
-            return true;
         }
+        repository.save(user);
+        return getUsersFavoriteStations(name);
     }
 }
