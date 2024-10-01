@@ -87,7 +87,8 @@ public class StationServiceImpl implements IStationService {
 
         Station station = repository.findByStationuuid(stationuuid)
                 .orElseThrow(() -> new StationNotFoundException("Station not found with uuid: " + stationuuid));
-        return convertToDto(station);
+
+        return mapper.map(station, StationResponseDto.class);
     }
 
 
