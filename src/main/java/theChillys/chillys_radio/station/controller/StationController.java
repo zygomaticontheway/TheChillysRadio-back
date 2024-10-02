@@ -99,5 +99,8 @@ public class StationController {
         return ResponseEntity.ok(topLanguages);
     }
 
-
+    @GetMapping ("/stations/amount")
+    public Integer getAllStationsAmount (){
+        return service.getAllStationsAmount();
+    }
 }

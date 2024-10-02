@@ -34,6 +34,8 @@ public interface IStationService {
 
     Map<String, Long> getLanguagesWithStationCount();
 
+    Integer getAllStationsAmount();
+
 
 
 }

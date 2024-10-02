@@ -198,8 +198,10 @@ public class StationServiceImpl implements IStationService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
-
-
+    @Override
+    public Integer getAllStationsAmount() {
+        return repository.findAll().size();
+    }
 }
 
 
