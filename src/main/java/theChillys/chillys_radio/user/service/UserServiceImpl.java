@@ -171,9 +171,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public List<StationResponseDto> getUsersFavoriteStations(String name) {
 
         UserResponseDto user = getUserResponseDtoByName(name);
-        List<StationResponseDto> favoriteStationsDto = user.getFavorites();
 
-        return favoriteStationsDto;
+        return user.getFavorites();
     }
 
     @Override
