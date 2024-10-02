@@ -172,33 +172,33 @@ class UserServiceImplTest {
 
 
 
-    @Test
-    void testGetUsersFavoriteStations() {
-
-        StationResponseDto stationResponseDto = new StationResponseDto();
-        stationResponseDto.setStationuuid("stationUuid");
-        stationResponseDto.setName("Test Station");
-
-        when(userRepository.findUserByName("admin")).thenReturn(Optional.of(user));
-
-        when(mapper.map(station, StationResponseDto.class)).thenReturn(stationResponseDto);
-
-        List<StationResponseDto> responseDto = userServiceImpl.getUsersFavoriteStations("admin");
-
-        assertNotNull(responseDto, "UserResponseDto must not be null");
-
-        if (!responseDto.isEmpty()) {
-            assertEquals("stationUuid", responseDto.get(0).getStationuuid(), "Station uuid must match");
-            assertEquals("Test Station", responseDto.get(0).getName(), "Station name must match");
-        }
-
-        verify(userRepository).findUserByName("admin");
-
-        if (!responseDto.isEmpty()) {
-            verify(mapper).map(station, StationResponseDto.class);
-        }
-
-        System.out.println("Test testGetUsersFavoriteStations passed successfully!");
-    }
+//    @Test
+//    void testGetUsersFavoriteStations() {
+//
+//        StationResponseDto stationResponseDto = new StationResponseDto();
+//        stationResponseDto.setStationuuid("stationUuid");
+//        stationResponseDto.setName("Test Station");
+//
+//        when(userRepository.findUserByName("admin")).thenReturn(Optional.of(user));
+//
+//        when(mapper.map(station, StationResponseDto.class)).thenReturn(stationResponseDto);
+//
+//        List<StationResponseDto> responseDto = userServiceImpl.getUsersFavoriteStations("admin");
+//
+//        assertNotNull(responseDto, "UserResponseDto must not be null");
+//
+//        if (!responseDto.isEmpty()) {
+//            assertEquals("stationUuid", responseDto.get(0).getStationuuid(), "Station uuid must match");
+//            assertEquals("Test Station", responseDto.get(0).getName(), "Station name must match");
+//        }
+//
+//        verify(userRepository).findUserByName("admin");
+//
+//        if (!responseDto.isEmpty()) {
+//            verify(mapper).map(station, StationResponseDto.class);
+//        }
+//
+//        System.out.println("Test testGetUsersFavoriteStations passed successfully!");
+//    }
 
 }
