@@ -172,11 +172,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
         UserResponseDto user = getUserResponseDtoByName(name);
 
-        System.out.println("?????----- founded user in getUsersFavoriteStations: " + user);
-        List<StationResponseDto> favoriteStationsDto = user.getFavorites();
-        System.out.println("?????----- his stations getUsersFavoriteStations: " + favoriteStationsDto);
-
-        return favoriteStationsDto;
+        return user.getFavorites();
     }
 
     @Override
@@ -186,13 +182,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         Station station = stationRepository.findByStationuuid(stationuuid).orElseThrow(() -> new StationNotFoundException("Station with stationuuid: " + stationuuid + " not exist"));
 
         if (user.getFavorites().contains(station)) {
-            System.out.println("-------Favorite stations BEFORE remove:" + user.getFavorites());
             user.getFavorites().remove(station);
-            System.out.println("-------Favorite stations AFTER remove:" + user.getFavorites());
         } else {
-            System.out.println("--+++--Favorite stations BEFORE add:" + user.getFavorites());
             user.getFavorites().add(station);
-            System.out.println("--+++--Favorite stations AFTER add:" + user.getFavorites());
         }
         repository.save(user);
         return getUsersFavoriteStations(name);
