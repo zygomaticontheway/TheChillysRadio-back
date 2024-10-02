@@ -23,5 +23,15 @@ public class UserResponseDto {
     private List<StationResponseDto> favorites;
     private Set<Role> roles;
 
+    @Override
+    public String toString() {
+        return "UserResponseDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", favorites=" + favorites +
+                ", roles=" + roles +
+                '}';
+    }
 }
 

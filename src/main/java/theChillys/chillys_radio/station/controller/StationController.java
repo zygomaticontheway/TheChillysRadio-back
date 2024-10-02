@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -17,6 +18,7 @@ import theChillys.chillys_radio.station.entity.Station;
 import theChillys.chillys_radio.station.service.IStationService;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -79,4 +81,26 @@ public class StationController {
     }
 
 
+    @GetMapping("/stations/tags")
+    public ResponseEntity<Map<String, Long>> getTopTags() {
+        Map<String, Long> topTags = service.getTagsWithStationCount();
+        return ResponseEntity.ok(topTags);
+    }
+
+    @GetMapping("/stations/countries")
+    public ResponseEntity<Map<String, Long>> getTopСountries() {
+        Map<String, Long> topСountries = service.getCountriesWithStationCount();
+        return ResponseEntity.ok(topСountries);
+    }
+
+    @GetMapping("/stations/languages")
+    public ResponseEntity<Map<String, Long>> getTopcountriesLanguages() {
+        Map<String, Long> topLanguages = service.getLanguagesWithStationCount();
+        return ResponseEntity.ok(topLanguages);
+    }
+
+    @GetMapping ("/stations/amount")
+    public Integer getAllStationsAmount (){
+        return service.getAllStationsAmount();
+    }
 }

@@ -2,6 +2,7 @@ package theChillys.chillys_radio.user.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
 
@@ -21,13 +22,13 @@ public interface IUserService {
     Optional<UserResponseDto> getUserById(Long id);
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
-    UserResponseDto getUsersFavoriteStations(Long userId);
+    List<StationResponseDto> getUsersFavoriteStations(String name);
+    List<StationResponseDto> toggleFavoriteStation(String name, String stationuuid);
 
     UserResponseDto setAdminRole(String name);
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 
-    boolean toggleFavoriteStation(Long userId, String stationuuid);
 
     UserResponseDto getUserResponseDtoByName(String name);
 

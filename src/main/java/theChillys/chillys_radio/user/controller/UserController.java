@@ -1,11 +1,14 @@
 package theChillys.chillys_radio.user.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.user.dto.ChangePasswordDto;
 import theChillys.chillys_radio.user.dto.UserRequestDto;
 import theChillys.chillys_radio.user.dto.UserResponseDto;
@@ -45,9 +48,20 @@ public class UserController {
         return service.getUserById(userId);
     }
 
+    @GetMapping("/users/my-favorites")
+    public List<StationResponseDto> getUsersFavoriteStations( Principal principal) {
+
+        String name = principal.getName();
+
+        return service.getUsersFavoriteStations(name);
+    }
+
     @PostMapping("/users/my-favorites")
-    public boolean toggleFavoriteStation(@RequestParam Long id, @RequestParam String stationuuid) {
-        return service.toggleFavoriteStation(id, stationuuid);
+    public List<StationResponseDto> toggleFavoriteStation(@RequestBody String stationuuid, Principal principal) {
+
+        String name = principal.getName();
+
+        return service.toggleFavoriteStation(name, stationuuid);
     }
 
     @PutMapping("/users/{id}")
@@ -67,19 +81,11 @@ public class UserController {
         return service.setAdminRole(name);
     }
 
-    @GetMapping("/users/{userId}/favorites")
-    public UserResponseDto getUsersFavoriteStations(@PathVariable Long userId) {
-        return service.getUsersFavoriteStations(userId);
-    }
-
     @GetMapping("/users/my-profile")
     public UserResponseDto getUserProfile(Principal principal) {
         String name = principal.getName();
 
-        UserResponseDto userResponseDtoByName = service.getUserResponseDtoByName(name);
-        Long id1 = userResponseDtoByName.getId();
-        return getUsersFavoriteStations(id1);
-
+        return service.getUserResponseDtoByName(name);
     }
 
 }
