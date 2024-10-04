@@ -20,15 +20,16 @@ public interface IUserService {
     UserResponseDto changePassword(Long userId, String newPassword);
 
     Optional<UserResponseDto> getUserById(Long id);
+
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
     List<StationResponseDto> getUsersFavoriteStations(String name);
+
     List<StationResponseDto> toggleFavoriteStation(String name, String stationuuid);
 
     UserResponseDto setAdminRole(String name);
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
-
 
     UserResponseDto getUserResponseDtoByName(String name);
 

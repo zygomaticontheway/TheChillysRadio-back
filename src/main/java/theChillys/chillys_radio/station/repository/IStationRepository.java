@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public interface IStationRepository extends JpaRepository<Station, Long> {
 
-    List<Station> findAllByOrderByClickcountDesc();
+    Page<Station> findAllByOrderByClickcountDesc(Pageable pageable);
 
-    List<Station> findAllByOrderByVotesDesc();
+    Page<Station> findAllByOrderByVotesDesc(Pageable pageable);
 
     Optional<Station> findByStationuuid(String stationuuid);
 

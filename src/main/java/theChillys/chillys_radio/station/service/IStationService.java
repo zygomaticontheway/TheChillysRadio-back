@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface IStationService {
-    List<StationResponseDto> getAllStationsByTopClicks();
 
     Page<StationResponseDto> getAllStations(int page, int size);
 
-    List<StationResponseDto> getAllStationsByTopVotes();
+    Page<StationResponseDto> getAllStationsByTopClicks(Pageable pageable);
+
+    Page<StationResponseDto> getAllStationsByTopVotes(Pageable pageable);
+
+    Page<StationResponseDto> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable);
 
     StationResponseDto getStationByStationuuid(String stationuuid);
 
@@ -25,8 +28,6 @@ public interface IStationService {
     Mono<ModifyResponseDto> click(String stationuuid);
 
     StationUrlDto getStreamUrl(String stationuuid);
-
-    Page<Station> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable);
 
     Map<String, Long> getTagsWithStationCount();
 
