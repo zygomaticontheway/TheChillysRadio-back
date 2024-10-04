@@ -16,9 +16,11 @@ public interface IUserService {
 
     UserResponseDto updateUser(Long userId, UserRequestDto dto);
 
-    UserResponseDto changePassword(Long userId, String newPassword);
+//    UserResponseDto changePassword(Long id, String oldPassword, String newPassword);
+    UserResponseDto changePassword(String  name, String oldPassword,  String newPassword);
 
-    Optional<UserResponseDto> getUserById(Long id);
+    Optional<UserResponseDto> getUserById(Long userId);
+
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
     UserResponseDto getUsersFavoriteStations(Long userId);
@@ -30,5 +32,6 @@ public interface IUserService {
     boolean toggleFavoriteStation(Long userId, String stationuuid);
 
     UserResponseDto getUserResponseDtoByName(String name);
+
 
 }

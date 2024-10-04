@@ -12,4 +12,6 @@ import lombok.Setter;
 @Setter
 public class ChangePasswordDto {
     private String newPassword;
+    private String oldPassword;
+
 }

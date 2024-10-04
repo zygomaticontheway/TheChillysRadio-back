@@ -147,14 +147,36 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto changePassword(Long userId, String newPassword) {
-        User user = findUserById(userId);
+    public UserResponseDto changePassword(String name, String oldPassword, String newPassword) {
+        User user = findUserByName(name);
+        if(!encoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Old password incorrect");
+        }
         String encodedPass = encoder.encode(newPassword);
         user.setPassword(encodedPass);
-        User saved = repository.save(user);
-
-        return mapper.map(saved, UserResponseDto.class);
+        User savedUser = repository.save(user);
+        return mapper.map(savedUser, UserResponseDto.class);
     }
+
+    public User findUserByName(String name) {
+        return repository.findUserByName(name)
+                .orElseThrow(() -> new RuntimeException("User with name: " + name + " not found"));
+    }
+
+//    @Override
+//    @Transactional
+//    public UserResponseDto changePassword(Long userId, String oldPassword, String newPassword)  {
+//        User user = findUserById(userId);
+//        if(!encoder.matches(oldPassword, user.getPassword())) {
+//            throw new RuntimeException("Incorrect old password");
+//        }
+//        String encodedPass = encoder.encode(newPassword);
+//        user.setPassword(encodedPass);
+//        User savedUser = repository.save(user);
+//
+//       return  mapper.map(savedUser, UserResponseDto.class);
+//    }
+
 
 
     @Override
@@ -170,6 +192,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
+
+
 
     public UserResponseDto getUserResponseDtoByName(String name) {
         Optional<User> userOptional = repository.findUserByName(name);

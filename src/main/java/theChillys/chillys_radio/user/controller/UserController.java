@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import theChillys.chillys_radio.user.dto.ChangePasswordDto;
@@ -55,11 +56,11 @@ public class UserController {
         return service.updateUser(Id, dto);
     }
 
-    @PostMapping("/users/{id}/change-password")
-    public UserResponseDto changePassword(@PathVariable(name = "id") Long userId, @RequestBody ChangePasswordDto passwordDto) {
-        return service.changePassword(userId, passwordDto.getNewPassword());
-
+    @PostMapping("/users/{name}/change-password")
+    public UserResponseDto changePassword(@PathVariable(name = "name") String name, @RequestBody ChangePasswordDto passwordDto) {
+        return service.changePassword(name, passwordDto.getOldPassword(), passwordDto.getNewPassword());
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")  // only for admin
     @PutMapping("/set-admin/{name}")
