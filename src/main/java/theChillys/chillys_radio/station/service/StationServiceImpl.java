@@ -35,26 +35,8 @@ public class StationServiceImpl implements IStationService {
     private final IStationRepository repository;
     private final IDataService dataService;
 
-
-//    public List<StationResponseDto> getAllStations() {
-//
-//        logger.debug("Fetching all stations ");
-//
-//        List<Station> stations = repository.findAll();
-//        return stations.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
-
-    @Override
-    public List<StationResponseDto> getAllStationsByTopClicks() {
-
-        logger.debug("Fetching stations by top clicks");
-
-        List<Station> stations = repository.findAllByOrderByClickcountDesc();
-        return stations.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    private StationResponseDto convertToDto(Station station) {
+        return mapper.map(station, StationResponseDto.class);
     }
 
     @Override
@@ -65,19 +47,51 @@ public class StationServiceImpl implements IStationService {
         return stationsPage.map(this::convertToDto);
     }
 
-    private StationResponseDto convertToDto(Station station) {
-        return mapper.map(station, StationResponseDto.class);
+    @Override
+    public Page<StationResponseDto> getAllStationsByTopClicks(Pageable pageable) {
+
+        Page<Station> stationsPage;
+
+        logger.debug("Fetching stations by top clicks");
+
+        stationsPage = repository.findAllByOrderByClickcountDesc(pageable);
+
+        return stationsPage.map(this::convertToDto);
     }
 
     @Override
-    public List<StationResponseDto> getAllStationsByTopVotes() {
+    public Page<StationResponseDto> getAllStationsByTopVotes(Pageable pageable) {
+
+        Page<Station> stationsPage;
 
         logger.debug("Fetching stations by top votes");
 
-        List<Station> stations = repository.findAllByOrderByVotesDesc();
-        return stations.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        stationsPage = repository.findAllByOrderByVotesDesc(pageable);
+
+        return stationsPage.map(this::convertToDto);
+    }
+
+    @Override
+    public Page<StationResponseDto> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable) {
+
+        Page<Station> stationsPage;
+
+        if ((name == null || name.isEmpty()) && (tags == null || tags.isEmpty()) &&
+                (country == null || country.isEmpty()) && (language == null || language.isEmpty())) {
+
+            stationsPage = repository.findAll(pageable);
+
+            return stationsPage.map(this::convertToDto);
+
+        }
+        stationsPage = repository.findByNameContainingIgnoreCaseAndTagsContainingIgnoreCaseAndCountryContainsIgnoreCaseAndLanguageContainingIgnoreCase(
+                name == null ? "" : name,
+                tags == null ? "" : tags,
+                country == null ? "" : country,
+                language == null ? "" : language,
+                pageable);
+
+        return stationsPage.map(this::convertToDto);
     }
 
     @Override
@@ -134,23 +148,6 @@ public class StationServiceImpl implements IStationService {
         return new StationUrlDto(urlResolved);
     }
 
-
-    @Override
-    public Page<Station> getStationsWithFilters(String name, String tags, String country, String language, Pageable pageable) {
-        if ((name == null || name.isEmpty()) && (tags == null || tags.isEmpty()) &&
-                (country == null || country.isEmpty()) && (language == null || language.isEmpty())) {
-            return repository.findAll(pageable);
-
-        }
-        return repository.findByNameContainingIgnoreCaseAndTagsContainingIgnoreCaseAndCountryContainsIgnoreCaseAndLanguageContainingIgnoreCase(
-                name == null ? "" : name,
-                tags == null ? "" : tags,
-                country == null ? "" : country,
-                language == null ? "" : language,
-                pageable);
-
-    }
-
     @Override
     public Map<String, Long> getTagsWithStationCount() {
         List<Station> stations = repository.findAll();
@@ -166,7 +163,6 @@ public class StationServiceImpl implements IStationService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
-
     @Override
     public Map<String, Long> getCountriesWithStationCount() {
         List<Station> stations = repository.findAll();
@@ -180,8 +176,6 @@ public class StationServiceImpl implements IStationService {
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
-
-
 
     @Override
     public Map<String, Long> getLanguagesWithStationCount() {
