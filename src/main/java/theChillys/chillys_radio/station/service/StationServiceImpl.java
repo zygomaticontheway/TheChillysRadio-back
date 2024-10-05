@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
@@ -82,7 +83,6 @@ public class StationServiceImpl implements IStationService {
             stationsPage = repository.findAll(pageable);
 
             return stationsPage.map(this::convertToDto);
-
         }
         stationsPage = repository.findByNameContainingIgnoreCaseAndTagsContainingIgnoreCaseAndCountryContainsIgnoreCaseAndLanguageContainingIgnoreCase(
                 name == null ? "" : name,
@@ -90,6 +90,14 @@ public class StationServiceImpl implements IStationService {
                 country == null ? "" : country,
                 language == null ? "" : language,
                 pageable);
+
+        return stationsPage.map(this::convertToDto);
+    }
+
+    @Override
+    public Page<StationResponseDto> searchStationsByTerm(String search, Pageable pageable) {
+
+        Page<Station> stationsPage = repository.searchStationsByTerm(search, pageable);
 
         return stationsPage.map(this::convertToDto);
     }
