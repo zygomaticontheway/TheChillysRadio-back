@@ -53,6 +53,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/vote/{stationuuid}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/search").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/stations/filtered").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/top-clicks").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/top-votes").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/amount").permitAll()

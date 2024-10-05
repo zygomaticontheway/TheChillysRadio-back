@@ -23,6 +23,8 @@ public interface IStationService {
 
     StationResponseDto getStationByStationuuid(String stationuuid);
 
+    Page<StationResponseDto> searchStationsByTerm (String search, Pageable pageable);
+
     Mono<ModifyResponseDto> vote(String stationuuid);
 
     Mono<ModifyResponseDto> click(String stationuuid);
@@ -36,7 +38,6 @@ public interface IStationService {
     Map<String, Long> getLanguagesWithStationCount();
 
     Integer getAllStationsAmount();
-
 
 
 }
