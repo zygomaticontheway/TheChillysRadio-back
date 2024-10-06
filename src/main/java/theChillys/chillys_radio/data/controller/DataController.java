@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
+import theChillys.chillys_radio.data.service.DNSLookup;
 import theChillys.chillys_radio.data.service.IDataService;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ public class DataController {
 
     @Autowired
     private final IDataService service;
+    private final DNSLookup dnsLookup;
 
     @GetMapping("/ivan-stations")
     public Mono<ModifyResponseDto> getAllStations(){
@@ -41,6 +46,12 @@ public class DataController {
     public Mono<ModifyResponseDto> click (@PathVariable (name = "stationuuid") String stationuuid){
 
         return service.postClickStation(stationuuid);
+    }
+
+    @GetMapping("/dns-lookup")
+    public String getRandomHost() {
+
+        return dnsLookup.getRandomHost();
     }
 
 
