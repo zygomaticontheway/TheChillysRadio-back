@@ -163,21 +163,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User with name: " + name + " not found"));
     }
 
-//    @Override
-//    @Transactional
-//    public UserResponseDto changePassword(Long userId, String oldPassword, String newPassword)  {
-//        User user = findUserById(userId);
-//        if(!encoder.matches(oldPassword, user.getPassword())) {
-//            throw new RuntimeException("Incorrect old password");
-//        }
-//        String encodedPass = encoder.encode(newPassword);
-//        user.setPassword(encodedPass);
-//        User savedUser = repository.save(user);
-//
-//       return  mapper.map(savedUser, UserResponseDto.class);
-//    }
-
-
 
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {

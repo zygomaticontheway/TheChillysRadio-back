@@ -56,8 +56,9 @@ public class UserController {
         return service.updateUser(Id, dto);
     }
 
-    @PostMapping("/users/{name}/change-password")
-    public UserResponseDto changePassword(@PathVariable(name = "name") String name, @RequestBody ChangePasswordDto passwordDto) {
+    @PostMapping("/users/change-password")
+    public UserResponseDto changePassword( @RequestBody ChangePasswordDto passwordDto, Principal principal) {
+        String name = principal.getName();
         return service.changePassword(name, passwordDto.getOldPassword(), passwordDto.getNewPassword());
     }
 
