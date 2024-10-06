@@ -176,7 +176,7 @@ public class StationServiceImpl implements IStationService {
         List<Station> stations = repository.findAll();
 
         Map<String, Long> countriesCounts = stations.stream()
-                .map(station -> station.getCountry())
+                .map(Station::getCountry)
                 .filter(country -> country != null && !country.trim().isEmpty())
                 .collect(Collectors.groupingBy(country -> country, Collectors.counting()));
 

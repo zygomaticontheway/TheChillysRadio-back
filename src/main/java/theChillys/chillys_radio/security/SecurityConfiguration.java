@@ -58,6 +58,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/stations/top-votes").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/amount").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/dns-lookup").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/fetch-stations").permitAll()
                                 .anyRequest().permitAll() //все остальные запросы доступны только авторизованным пользователям
                 ).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
 

@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 import theChillys.chillys_radio.data.dto.ModifyResponseDto;
 import theChillys.chillys_radio.data.service.DNSLookup;
 import theChillys.chillys_radio.data.service.IDataService;
+import theChillys.chillys_radio.data.service.IRestTemplateDataService;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,6 +24,13 @@ public class DataController {
     @Autowired
     private final IDataService service;
     private final DNSLookup dnsLookup;
+    private final IRestTemplateDataService rtDataService;
+
+    @GetMapping("/fetch-stations")
+    public ModifyResponseDto fetchAllStations (){
+
+        return rtDataService.fetchAllStations();
+    }
 
     @GetMapping("/ivan-stations")
     public Mono<ModifyResponseDto> getAllStations(){

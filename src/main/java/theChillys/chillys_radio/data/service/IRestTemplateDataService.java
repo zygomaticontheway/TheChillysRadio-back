@@ -6,8 +6,8 @@ import theChillys.chillys_radio.data.dto.ModifyResponseDto;
 
 public interface IRestTemplateDataService {
 
-    Page<ModifyResponseDto> getAllStations();
-    Mono<ModifyResponseDto> getStationByStationuuid(String stationuuid);
-    Mono<ModifyResponseDto> postClickStation(String stationuuid);
-    Mono<ModifyResponseDto> postVoteStation(String stationuuid);
+    ModifyResponseDto fetchAllStations();
+    ModifyResponseDto fetchStationByStationuuid(String stationuuid);
+    ModifyResponseDto postClickStation(String stationuuid);
+    ModifyResponseDto postVoteStation(String stationuuid);
 }

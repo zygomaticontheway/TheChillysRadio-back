@@ -1,17 +1,25 @@
 package theChillys.chillys_radio.data.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import theChillys.chillys_radio.data.dto.DataResponseDto;
+import theChillys.chillys_radio.data.dto.HostsResponseDto;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class DNSLookup {
+
+    ObjectMapper objectMapper = new ObjectMapper();
+
     public List<String> performDNSLookup() {
 
         try {
@@ -37,9 +45,24 @@ public class DNSLookup {
         }
     }
 
+    private List<String> getHosts() {
+        RestTemplate restTemplate = new RestTemplate();
+        String URL = "http://all.api.radio-browser.info/json/servers";
+
+        ResponseEntity<HostsResponseDto[]> response = restTemplate.getForEntity(URL, HostsResponseDto[].class);
+        HostsResponseDto[] hostsResponse = response.getBody();
+
+        List<String> hosts = Arrays.stream(hostsResponse)
+                .map(HostsResponseDto::getName)
+                .collect(Collectors.toList());
+        System.out.println(hosts);
+
+        return hosts;
+    }
+
     public String getRandomHost (){
 
-        List<String> hosts = performDNSLookup();
+        List<String> hosts = getHosts();
         System.out.println(hosts.get(new Random().nextInt(hosts.size())));
 
         return hosts.get(new Random().nextInt(hosts.size()));
