@@ -3,6 +3,7 @@ package theChillys.chillys_radio.user.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,11 +70,12 @@ public class UserController {
         return service.updateUser(Id, dto);
     }
 
-    @PostMapping("/users/{id}/change-password")
-    public UserResponseDto changePassword(@PathVariable(name = "id") Long userId, @RequestBody ChangePasswordDto passwordDto) {
-        return service.changePassword(userId, passwordDto.getNewPassword());
-
+    @PostMapping("/users/change-password")
+    public UserResponseDto changePassword( @RequestBody ChangePasswordDto passwordDto, Principal principal) {
+        String name = principal.getName();
+        return service.changePassword(name, passwordDto.getOldPassword(), passwordDto.getNewPassword());
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")  // only for admin
     @PutMapping("/set-admin/{name}")
