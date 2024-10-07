@@ -48,7 +48,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return customers.stream().map(c -> mapper.map(c, UserResponseDto.class)).toList();
     }
 
-
     @Override
     public UserResponseDto createUser(UserRequestDto dto) {
 
@@ -143,7 +142,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User with name: " + name + " not found"));
     }
 
-
     @Override
     public Optional<UserResponseDto> getUserById(Long id) {
 
@@ -157,8 +155,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return users.stream()
                 .map(user -> mapper.map(user, UserResponseDto.class)).toList();
     }
-
-
 
     public UserResponseDto getUserResponseDtoByName(String name) {
 
