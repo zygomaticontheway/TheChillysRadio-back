@@ -31,4 +31,5 @@ public interface IStationRepository extends JpaRepository<Station, Long> {
             "OR LOWER(s.language) LIKE LOWER(CONCAT('%', :search, '%')) " +
             "OR LOWER(s.languagecodes) LIKE LOWER(CONCAT('%', :search, '%')) " )
     Page<Station> searchStationsByTerm (@Param("search") String search, Pageable pageable);
+
 }
