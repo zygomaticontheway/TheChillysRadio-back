@@ -52,7 +52,13 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/click/{stationuuid}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/vote/{stationuuid}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/stations/search").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/stations/filtered").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/stations/top-clicks").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/stations/top-votes").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/amount").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/dns-lookup").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/fetch-stations").permitAll()
                                 .anyRequest().permitAll() //все остальные запросы доступны только авторизованным пользователям
                 ).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
 
