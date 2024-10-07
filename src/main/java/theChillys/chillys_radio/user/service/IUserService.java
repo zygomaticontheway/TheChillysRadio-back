@@ -17,19 +17,24 @@ public interface IUserService {
 
     UserResponseDto updateUser(Long userId, UserRequestDto dto);
 
-    UserResponseDto changePassword(Long userId, String newPassword);
+//    UserResponseDto changePassword(Long id, String oldPassword, String newPassword);
+    UserResponseDto changePassword(String  name, String oldPassword,  String newPassword);
+
+    Optional<UserResponseDto> getUserById(Long userId);
 
     Optional<UserResponseDto> getUserById(Long id);
+
     List<UserResponseDto> findUsersByNameOrEmail(String name, String email);
 
     List<StationResponseDto> getUsersFavoriteStations(String name);
+
     List<StationResponseDto> toggleFavoriteStation(String name, String stationuuid);
 
     UserResponseDto setAdminRole(String name);
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 
-
     UserResponseDto getUserResponseDtoByName(String name);
+
 
 }
