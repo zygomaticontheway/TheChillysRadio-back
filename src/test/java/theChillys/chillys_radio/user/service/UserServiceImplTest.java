@@ -19,6 +19,7 @@ import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.station.repository.IStationRepository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -178,20 +179,15 @@ class UserServiceImplTest {
         stationResponseDto.setStationuuid("stationUuid");
         stationResponseDto.setName("Test Station");
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findUserByName("admin")).thenReturn(Optional.of(user));
         when(mapper.map(station, StationResponseDto.class)).thenReturn(stationResponseDto);
 
-        UserResponseDto responseDto = userServiceImpl.getUsersFavoriteStations(1L);
+        List<StationResponseDto> responseDto = userServiceImpl.getUsersFavoriteStations("admin");
 
         try {
             assertNotNull(responseDto, "UserResponseDto must not be null");
-            assertEquals(1L, responseDto.getId(), "User ID must be 1L");
-            assertEquals("Test User", responseDto.getName(), "Username must be 'Test User'");
-            assertEquals("test@example.com", responseDto.getEmail(), "User email must be 'test@example.com'");
-            assertEquals(1, responseDto.getFavorites().size(), "User must have 1 favorite station");
-            assertEquals("stationUuid", responseDto.getFavorites().get(0).getStationuuid(), "Station UUID must be 'stationUuid'");
-            assertEquals(1, responseDto.getRoles().size(), "User must have 1 role");
-            assertTrue(responseDto.getRoles().stream().anyMatch(r -> r.getTitle().equals("ROLE_USER")), "User must have role 'ROLE_USER'");
+            //TODO Не обязательно у пользователя станции в избранном быть должны. Чаще всего их там не будет. Нужно переписать тест
+            assertEquals(1, responseDto.size(), "User must have 1 favorite station");
 
             verify(userRepository).findById(1L);
             verify(mapper).map(station, StationResponseDto.class);
