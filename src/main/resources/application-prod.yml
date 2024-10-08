@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/chillys_radio
-    username: postgres
-    password: qwerty007
+    url: jdbc:postgresql://app-23e7f424-500f-4026-afe5-c29de5396762-do-user-16395802-0.e.db.ondigitalocean.com:25060/chillysradio
+    username: chillysradio
+    password: AVNS_3QUqLLLOr16TGEHaSvl
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -20,7 +20,7 @@ server:
 
 springdoc:
   api-docs:
-    path: /v3/api-docs        # Путь для доступа к OpenAPI спецификации
+   path: /v3/api-docs        # Путь для доступа к OpenAPI спецификации
   swagger-ui:
     path: /swagger-ui.html # Путь для Swagger UI
     enabled: true
@@ -28,3 +28,5 @@ springdoc:
     display-request-duration: true  # Отображение времени выполнения запроса
     try-it-out-enabled: true   # Включение возможности "Try it out" для выполнения запросов из UI
   default-produces-media-type: application/json  # Формат данных по умолчанию
+
+

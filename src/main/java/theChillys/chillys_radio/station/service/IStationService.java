@@ -31,12 +31,6 @@ public interface IStationService {
 
     StationUrlDto getStreamUrl(String stationuuid);
 
-    Map<String, Long> getTagsWithStationCount();
-
-    Map<String, Long> getCountriesWithStationCount();
-
-    Map<String, Long> getLanguagesWithStationCount();
-
     Integer getAllStationsAmount();
 
 
