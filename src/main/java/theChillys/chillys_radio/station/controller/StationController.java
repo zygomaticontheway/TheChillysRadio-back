@@ -15,6 +15,8 @@ import theChillys.chillys_radio.exception.StationNotFoundException;
 import theChillys.chillys_radio.station.dto.StationResponseDto;
 import theChillys.chillys_radio.station.dto.StationUrlDto;
 import theChillys.chillys_radio.station.service.IStationService;
+import theChillys.chillys_radio.station_info.dto.StationsInfoResponseDto;
+import theChillys.chillys_radio.station_info.service.IStationsInfoService;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,7 @@ public class StationController {
 
     @Autowired
     private final IStationService service;
+    private final IStationsInfoService stationsInfoService;
 
     @GetMapping("/stations")   //example: GET /api/stations?page=1&size=20 or /api/stations?page=2
     public ResponseEntity<Page<StationResponseDto>> getAllStations(
@@ -103,22 +106,16 @@ public class StationController {
         return service.vote(stationuuid); //Spring WebFlux сам обработает Mono и вернет результат клиенту асинхронно.
     }
 
-    @GetMapping("/stations/tags")
-    public ResponseEntity<Map<String, Long>> getTopTags() {
-        Map<String, Long> topTags = service.getTagsWithStationCount();
-        return ResponseEntity.ok(topTags);
+    @GetMapping("/stations/stations-info")
+    public ResponseEntity<List<StationsInfoResponseDto>> getStationsInfo() {
+        List<StationsInfoResponseDto> stationsInfo = stationsInfoService.getStationsInfo();
+        return ResponseEntity.ok(stationsInfo);
     }
 
-    @GetMapping("/stations/countries")
-    public ResponseEntity<Map<String, Long>> getTopСountries() {
-        Map<String, Long> topСountries = service.getCountriesWithStationCount();
-        return ResponseEntity.ok(topСountries);
-    }
-
-    @GetMapping("/stations/languages")
-    public ResponseEntity<Map<String, Long>> getTopcountriesLanguages() {
-        Map<String, Long> topLanguages = service.getLanguagesWithStationCount();
-        return ResponseEntity.ok(topLanguages);
+    @GetMapping("/stations/extract-info")
+    public ResponseEntity<Map<String, Long>> extractFieldsToDb() {
+        Map<String, Long> result = stationsInfoService.extractFieldsToDb();
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping ("/stations/amount")

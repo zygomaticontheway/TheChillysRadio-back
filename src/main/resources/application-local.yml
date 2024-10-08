@@ -20,7 +20,7 @@ server:
 
 springdoc:
   api-docs:
-   path: /v3/api-docs        # Путь для доступа к OpenAPI спецификации
+    path: /v3/api-docs        # Путь для доступа к OpenAPI спецификации
   swagger-ui:
     path: /swagger-ui.html # Путь для Swagger UI
     enabled: true
@@ -28,5 +28,3 @@ springdoc:
     display-request-duration: true  # Отображение времени выполнения запроса
     try-it-out-enabled: true   # Включение возможности "Try it out" для выполнения запросов из UI
   default-produces-media-type: application/json  # Формат данных по умолчанию
-
-
