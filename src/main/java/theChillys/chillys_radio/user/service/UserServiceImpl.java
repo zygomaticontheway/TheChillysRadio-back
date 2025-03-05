@@ -107,7 +107,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 
     private static String createConfirmationLink(String codeValue) {
-        String link = "<a href='https://urchin-app-jq2i7.ondigitalocean.app/#/confirm?id=" + codeValue + "'>Confirm Registration</a>";
+        String link = "<a href='https://57.129.44.101/#/confirm?id=" + codeValue + "'>Confirm Registration</a>";
         return link;
     }
 
