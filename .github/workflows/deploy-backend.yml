@@ -16,14 +16,14 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       - name: Build project
         run: mvn clean package -DskipTests
 
       - name: Deploy to server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.chillys_deploy }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
           scp -i private_key target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
