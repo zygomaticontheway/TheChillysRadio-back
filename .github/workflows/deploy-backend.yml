@@ -23,8 +23,10 @@ jobs:
 
       - name: Deploy to server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # <-- исправлено
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
-          scp -i private_key target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
-          ssh -i private_key deploy@57.129.44.101 "sudo systemctl restart backend"
+          echo "$SSH_PRIVATE_KEY" > chillys_deploy && chmod 600 chillys_deploy
+          ssh-keyscan -H 57.129.44.101 >> ~/.ssh/known_hosts
+          scp -i chillys_deploy target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
+          ssh -i chillys_deploy deploy@57.129.44.101 "cd /home/deploy/backend && docker stop chillys-backend || true && docker rm chillys-backend || true && docker build -t chillys-backend . && docker run -d --name chillys-backend -p 8080:8080 chillys-backend"
+
