@@ -31,6 +31,7 @@ jobs:
           ssh-keyscan -H 57.129.44.101 >> ~/.ssh/known_hosts
 
           # 🔥 Копируем JAR и Dockerfile
+          scp -i chillys_deploy -r . deploy@57.129.44.101:/home/deploy/backend
           scp -i chillys_deploy target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
           scp -i chillys_deploy Dockerfile deploy@57.129.44.101:/home/deploy/backend/Dockerfile
 
