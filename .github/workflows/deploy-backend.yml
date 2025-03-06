@@ -26,6 +26,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # <-- исправлено
         run: |
           echo "$SSH_PRIVATE_KEY" > chillys_deploy && chmod 600 chillys_deploy
+          mkdir -p ~/.ssh  # <== Создаём папку, если её нет
           ssh-keyscan -H 57.129.44.101 >> ~/.ssh/known_hosts
           scp -i chillys_deploy target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
           ssh -i chillys_deploy deploy@57.129.44.101 "cd /home/deploy/backend && docker stop chillys-backend || true && docker rm chillys-backend || true && docker build -t chillys-backend . && docker run -d --name chillys-backend -p 8080:8080 chillys-backend"
