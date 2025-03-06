@@ -23,14 +23,14 @@ jobs:
 
       - name: Deploy to server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.chillys_deploy }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_PRIVATE_KEY" > chillys_deploy && chmod 600 chillys_deploy
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           touch ~/.ssh/known_hosts
           ssh-keyscan -H 57.129.44.101 >> ~/.ssh/known_hosts
 
-          # Копируем JAR и Dockerfile
+          # 🔥 Копируем JAR и Dockerfile
           scp -i chillys_deploy target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
           scp -i chillys_deploy Dockerfile deploy@57.129.44.101:/home/deploy/backend/Dockerfile
 
