@@ -23,11 +23,21 @@ jobs:
 
       - name: Deploy to server
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # <-- исправлено
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_PRIVATE_KEY" > chillys_deploy && chmod 600 chillys_deploy
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh  # ✅ Создаём папку и задаём права доступа
-          touch ~/.ssh/known_hosts  # ✅ Явно создаём пустой known_hosts
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          touch ~/.ssh/known_hosts
           ssh-keyscan -H 57.129.44.101 >> ~/.ssh/known_hosts
+
+          # 🔥 Копируем JAR и Dockerfile
           scp -i chillys_deploy target/*.jar deploy@57.129.44.101:/home/deploy/backend/app.jar
-          ssh -i chillys_deploy deploy@57.129.44.101 "cd /home/deploy/backend && docker stop chillys-backend || true && docker rm chillys-backend || true && docker build -t chillys-backend . && docker run -d --name chillys-backend -p 8080:8080 chillys-backend"
+          scp -i chillys_deploy Dockerfile deploy@57.129.44.101:/home/deploy/backend/Dockerfile
+
+          # Запуск Docker с правами
+          ssh -i chillys_deploy deploy@57.129.44.101 "
+            sudo docker stop chillys-backend || true &&
+            sudo docker rm chillys-backend || true &&
+            sudo docker build -t chillys-backend /home/deploy/backend &&
+            sudo docker run -d --name chillys-backend -p 8080:8080 chillys-backend
+          "
