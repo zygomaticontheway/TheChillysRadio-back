@@ -40,5 +40,5 @@ jobs:
             sudo docker stop chillys-backend || true &&
             sudo docker rm chillys-backend || true &&
             sudo docker build -t chillys-backend /home/deploy/backend &&
-            sudo docker run -d --name chillys-backend -p 8080:8080 chillys-backend
+            sudo docker run -d --name chillys-backend --env-file /home/deploy/backend/.env -p 8080:8080 chillys-backend
           "
