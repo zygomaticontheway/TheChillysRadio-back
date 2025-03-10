@@ -13,8 +13,8 @@ spring:
   key_access: ${KEY_ACCESS}
   key_refresh: ${KEY_REFRESH}
   mail:
-    password: rmvv nrke oyjs zvam
-    username: chillysradio@gmail.com
+    password: ${EMAIL_PASSWORD}
+    username: ${EMAIL_USERNAME}
     host: smtp.gmail.com
     port: 587
     properties:
