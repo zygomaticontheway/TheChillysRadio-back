@@ -1,47 +1,47 @@
-version: "3.8"
-
-services:
-  backend:
-    build: ./backend
-    container_name: backend
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/chillys_radio
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: qwerty007
-    networks:
-      - app-network
-
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
-  db:
-    image: postgres:15
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_DB: chillys_radio
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: qwerty007
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-networks:
-  app-network:
-
-volumes:
-  pgdata:
+#version: "3.8"
+#
+#services:
+#  backend:
+#    build: ./backend
+#    container_name: backend
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/chillys_radio
+#      SPRING_DATASOURCE_USERNAME: dbadmin
+#      SPRING_DATASOURCE_PASSWORD: AVNS_3QUqLLLOr16TGEHaSvl
+#    networks:
+#      - app-network
+#
+#  frontend:
+#    build: ./frontend
+#    container_name: frontend
+#    ports:
+#      - "80:80"
+#    depends_on:
+#      - backend
+#    networks:
+#      - app-network
+#
+#  db:
+#    image: postgres:15
+#    container_name: postgres
+#    restart: always
+#    environment:
+#      POSTGRES_DB: chillysradio
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: qwerty007
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - app-network
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+#
+#networks:
+#  app-network:
+#
+#volumes:
+#  pgdata:
