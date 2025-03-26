@@ -27,6 +27,7 @@ services:
       context: /home/deploy/chillys-radio-fe
     ports:
       - "3000:80"
+
     environment:
       BACKEND_HOST: backend
       BACKEND_PORT: 8080
