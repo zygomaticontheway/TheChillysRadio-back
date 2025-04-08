@@ -1,11 +1,11 @@
 package theChillys.chillys_radio.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
+//import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
+//import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,10 +37,6 @@ public class TokenService {
     public TokenService(@Value("${spring.key_access}") String accessPhrase, // ${key.access} придуманные имена из головы, такие же должны быть в application_properties.md
                         @Value("${spring.key_refresh}") String refreshPhrase,
                         @Autowired IRoleRepository roleRepository) {
-
-        System.out.println("Access Key Phrase: " + accessPhrase);
-        System.out.println("Refresh Key Phrase: " + refreshPhrase);
-
         this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessPhrase));
         this.refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(refreshPhrase));
         this.roleRepository = roleRepository;
