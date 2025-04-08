@@ -1,25 +1,25 @@
 package theChillys.chillys_radio.user.service;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateNotFoundException;
+//import freemarker.template.Configuration;
+//import freemarker.template.Template;
+//import freemarker.template.TemplateNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.HttpStatus;
+//import org.springframework.cglib.core.Local;
+//import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
+//import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+//import org.springframework.web.client.RestClientException;
+//import org.springframework.web.client.RestClientResponseException;
 import theChillys.chillys_radio.exception.StationNotFoundException;
 import theChillys.chillys_radio.exception.UserNotFoundException;
-import theChillys.chillys_radio.mail.ChillysRadioMailSender;
+//import theChillys.chillys_radio.mail.ChillysRadioMailSender;
 import theChillys.chillys_radio.mail.MailTemplatesUtil;
 import theChillys.chillys_radio.role.IRoleService;
 import theChillys.chillys_radio.role.Role;
@@ -33,7 +33,7 @@ import theChillys.chillys_radio.user.entity.User;
 import theChillys.chillys_radio.user.repository.IConfirmationCodesRepository;
 import theChillys.chillys_radio.user.repository.IUserRepository;
 
-import java.io.IOException;
+//import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -107,7 +107,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 
     private static String createConfirmationLink(String codeValue) {
-        String link = "<a href='https://57.129.44.101/#/confirm?id=" + codeValue + "'>Confirm Registration</a>";
+        String link = "<a href='https://chillysradio.site/#/confirm?id=" + codeValue + "'>Confirm Registration</a>";
         return link;
     }
 
