@@ -20,20 +20,20 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
 
 
-    private final Map<String, String> refreshTokenStorage = new HashMap<>(); //name, token
+    private final Map<String, String> refreshTokenStorage = new HashMap<>(); //email, token
 
-    public TokenResponseDto login(UserLoginDto inbuondUser) throws AuthException {
-        String username = inbuondUser.getName();
-        User foundUser = (User) userService.loadUserByUsername(username); //безопасное преобразование типов в User ибо там содержатся как раз все данные юзера
+    public TokenResponseDto login(UserLoginDto inboundUser) throws AuthException {
+        String email = inboundUser.getEmail();
+        User foundUser = (User) userService.loadUserByEmail(email); //безопасное преобразование типов в User ибо там содержатся как раз все данные юзера
 
         //check password
-        if (passwordEncoder.matches(inbuondUser.getPassword(), foundUser.getPassword())){
+        if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword())){
             //password is correct
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
 
             //сохраняем токен
-            refreshTokenStorage.put(username, refreshToken);
+            refreshTokenStorage.put(email, refreshToken);
 
             return new TokenResponseDto(accessToken, refreshToken);
         } else {
@@ -44,20 +44,19 @@ public class AuthService {
     public TokenResponseDto getNewAccessToken(String inboundRefreshToken){
 
         Claims refreshClaims = tokenService.getRefreshClaims(inboundRefreshToken);
-        String username = refreshClaims.getSubject();
-        String savedRefreshToken = refreshTokenStorage.get(username); //ранее сохраненный в базе токен
+        String email = refreshClaims.getSubject();
+        String savedRefreshToken = refreshTokenStorage.get(email); //ранее сохраненный в базе токен
 
         //сравниваем сохраненный токен с пришедшим
         if (savedRefreshToken != null && savedRefreshToken.equals(inboundRefreshToken)){
 
-            User foundUser = (User) userService.loadUserByUsername(username);
+            User foundUser = (User) userService.loadUserByEmail(email);
             String accessToken = tokenService.generateAccessToken(foundUser);
 
             return new TokenResponseDto(accessToken, null); //отдаем только accessToken
         } else {
-            return new TokenResponseDto(null, null); //если токен невалидный то верну DTO без токенов
-            //но можно вернуть и exception
-//            throw new RuntimeException();
+            throw new RuntimeException("invalid token");
+//            return new TokenResponseDto(null, null); //если токен невалидный то верну DTO без токенов
         }
 
     }

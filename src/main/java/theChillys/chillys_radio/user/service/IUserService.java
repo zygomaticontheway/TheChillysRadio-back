@@ -31,6 +31,8 @@ public interface IUserService {
 
     UserDetails loadUserByUsername(String name) throws UsernameNotFoundException;
 
+    UserDetails loadUserByEmail(String email) throws UsernameNotFoundException;
+
     UserResponseDto getUserResponseDtoByName(String name);
 
     UserResponseDto confirm (String confirmCode);

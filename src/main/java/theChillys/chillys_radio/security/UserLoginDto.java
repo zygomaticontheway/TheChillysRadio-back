@@ -11,8 +11,8 @@ import lombok.*;
 @Schema(name = "Login Dto", description = "Info for login")
 public class UserLoginDto {
 
-    @Schema(description = "User login", example = "user")
-    private String name;
+    @Schema(description = "User email", example = "user@chillysradio.site")
+    private String email;
     @Schema(description = "password", example = "qwerty")
     private String password;
 }
