@@ -18,8 +18,6 @@ public class AuthService {
     private final IUserService userService;
     private final TokenService tokenService;
     private final BCryptPasswordEncoder passwordEncoder;
-
-
     private final Map<String, String> refreshTokenStorage = new HashMap<>(); //email, token
 
     public TokenResponseDto login(UserLoginDto inboundUser) throws AuthException {
@@ -45,6 +43,7 @@ public class AuthService {
 
         Claims refreshClaims = tokenService.getRefreshClaims(inboundRefreshToken);
         String email = refreshClaims.getSubject();
+        System.out.println("refreshClaims.getSubject() = " + email);
         String savedRefreshToken = refreshTokenStorage.get(email); //ранее сохраненный в базе токен
 
         //сравниваем сохраненный токен с пришедшим

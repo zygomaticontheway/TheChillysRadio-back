@@ -68,6 +68,7 @@ public class UserController {
     @PutMapping("/users/{id}")
     public UserResponseDto updateUser(@PathVariable(name = "id") Long Id, @RequestBody UserRequestDto dto) {
         return service.updateUser(Id, dto);
+        //TODO make it available to Authorized only user
     }
 
     @PostMapping("/users/change-password")

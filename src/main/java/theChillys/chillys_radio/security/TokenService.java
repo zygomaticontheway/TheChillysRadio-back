@@ -27,8 +27,8 @@ import java.util.*;
 
 @Service
 public class TokenService {
-    public static final int ACCESS_DAYS = 7;
-    public static final int REFRESH_DAYS = 30;
+    public static final int ACCESS_DAYS = 70;
+    public static final int REFRESH_DAYS = 300;
     private SecretKey accessKey;
     private SecretKey refreshKey;
     private final IRoleRepository roleRepository;

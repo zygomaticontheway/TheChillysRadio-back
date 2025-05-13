@@ -164,9 +164,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto setAdminRole(String name) {
+    public UserResponseDto setAdminRole(String email) {
 
-        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with email: " + name + " not found"));
+        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
 
         if (!user.getRoles().contains(roleService.getRoleByTitle("ROLE_ADMIN"))) {
             Set<Role> roles = user.getRoles();
@@ -231,8 +231,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
         List<User> users = repository.findByNameContainingOrEmailContaining(name, email);
 
-        return users.stream()
-                .map(user -> mapper.map(user, UserResponseDto.class)).toList();
+        if(users.isEmpty()) {
+            throw new UserNotFoundException(("User with name: " + name + " or " + email + "not found"));
+        } else {
+            return users.stream()
+                    .map(user -> mapper.map(user, UserResponseDto.class)).toList();
+        }
     }
 
     public UserResponseDto getUserResponseDtoByName(String name) {

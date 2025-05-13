@@ -32,9 +32,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-
-
-
                 .csrf(AbstractHttpConfigurer::disable) //защита от cross site request, запрещает принимать запросы со сторонних сайтов
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //говорим spring security чтобы сохранял сессию
                 .httpBasic(AbstractHttpConfigurer::disable)//отключаем basic authorisation
@@ -42,6 +39,8 @@ public class SecurityConfiguration {
                         (x) -> x
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")// permitAll = разрешить всем
+                                .requestMatchers(HttpMethod.GET, "/users/{id}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/users/{id}").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users/my-favorites").hasAnyRole("USER", "ADMIN") //hasAnyRole("USER") = разрешить только пользователям с перечисленными ролями  (да отбрасываем ROLE_)
                                 .requestMatchers(HttpMethod.POST, "/users/my-favorites").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
@@ -59,7 +58,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/stations/top-votes").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/stations/amount").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/dns-lookup").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/fetch-stations").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/fetch-stations").hasRole("ADMIN")
                                 .anyRequest().permitAll() //все остальные запросы доступны только авторизованным пользователям
                 ).addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); //добавили фильтр
 

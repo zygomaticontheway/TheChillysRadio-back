@@ -25,7 +25,6 @@ public class TokenFilter extends GenericFilterBean {
                          FilterChain filterChain //цепочка фильтров, выполняемых после моего
     ) throws IOException, ServletException {
 
-
         //получаем токен
         String token = getTokenFromRequest((HttpServletRequest) request);
 
