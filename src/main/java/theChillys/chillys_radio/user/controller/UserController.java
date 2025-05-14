@@ -86,9 +86,10 @@ public class UserController {
 
     @GetMapping("/users/my-profile")
     public UserResponseDto getUserProfile(Principal principal) {
-        String name = principal.getName();
+        String email = principal.getName();
+        System.out.println("### principal.getName(): " + email);
 
-        return service.getUserResponseDtoByName(name);
+        return service.getUserResponseDtoByEmail(email);
     }
 
 }

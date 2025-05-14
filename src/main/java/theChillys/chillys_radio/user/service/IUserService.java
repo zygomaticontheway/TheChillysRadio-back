@@ -35,6 +35,8 @@ public interface IUserService {
 
     UserResponseDto getUserResponseDtoByName(String name);
 
+    UserResponseDto getUserResponseDtoByEmail(String email);
+
     UserResponseDto confirm (String confirmCode);
 
 

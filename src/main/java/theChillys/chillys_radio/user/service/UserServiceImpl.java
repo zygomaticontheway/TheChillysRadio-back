@@ -97,7 +97,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     private static User createNewUserFromDto(UserRequestDto dto, String encodedPass, Role role) {
         User newUser = new User();
-        newUser.setName(dto.getName().isEmpty() ? "Change name ->" : dto.getName());
+        newUser.setName(dto.getName().isEmpty() ? "No name" : dto.getName());
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(encodedPass);
         newUser.setRoles(Collections.singleton(role));

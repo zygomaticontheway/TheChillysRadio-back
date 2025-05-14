@@ -59,10 +59,11 @@ public class TokenService {
 
         //генерим токен с помощью библиотеки Jwts, закладываем сюда нужную нам инфу
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .expiration(expirationDate)
                 .claim("roles", user.getRoles())//ключ-значение внутри сгенеренного токена
                 .claim("name", user.getUsername())
+                .claim("email", user.getEmail())
                 .signWith(accessKey) // подписываем
                 .compact(); //возвращает строку собственно токена
     }
@@ -72,7 +73,7 @@ public class TokenService {
         Date expirationDate = getExpirationDate(REFRESH_DAYS);
 
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .expiration(expirationDate)
                 .signWith(refreshKey)
                 .compact();

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                         (x) -> x
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")// permitAll = разрешить всем
-                                .requestMatchers(HttpMethod.GET, "/users/{id}").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/users/{id}").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users/my-favorites").hasAnyRole("USER", "ADMIN") //hasAnyRole("USER") = разрешить только пользователям с перечисленными ролями  (да отбрасываем ROLE_)
                                 .requestMatchers(HttpMethod.POST, "/users/my-favorites").hasAnyRole("USER", "ADMIN")
