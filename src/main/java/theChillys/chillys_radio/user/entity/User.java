@@ -88,7 +88,7 @@ public class User implements UserDetails { //имплементирует инт
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

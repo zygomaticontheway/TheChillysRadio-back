@@ -1,17 +1,81 @@
+version: "3.8"
 
-version: '3.8'
 services:
-
-  postgres:
-    image: postgres:13.5
-    restart: always
+  backend:
+    image: chillys-radio
+    container_name: backend
+    build:
+      context: .
+    #    depends_on:
+    #      db:
+    #        condition: service_healthy
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=qwerty007
-    volumes:
-      - postgres:/var/lib/postgresql/data
+      SPRING_DATASOURCE_URL: jdbc:postgresql://172.17.0.1:5432/${SPRING_DATASOURCE_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      KEY_ACCESS: ${KEY_ACCESS}
+      KEY_REFRESH: ${KEY_REFRESH}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     ports:
-      - '5434:5432'
+      - "8080:8080"
+    networks:
+      - app-network
 
-volumes:
-  postgres:
+  frontend:
+    image: chillys-radio-fe
+    container_name: frontend
+    build:
+      context: /home/deploy/chillys-radio-fe
+    ports:
+      - "3000:80"
+
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: 8080
+    depends_on:
+      - backend
+    networks:
+      - app-network
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - /home/deploy/chillys-radio/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /home/deploy/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - /home/deploy/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
+      - /home/deploy/chillys-radio/nginx/empty.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-network
+#  db:
+#    image: postgres:16.0
+#    container_name: postgres
+#    restart: always
+#    environment:
+#      POSTGRES_DB: ${SPRING_DATASOURCE_DB_NAME}
+#      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+#      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    volumes:
+#      - db-data:/var/lib/postgresql/data
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - app-network
+
+#volumes:
+#  db-data:
+
+networks:
+  app-network:
+    driver: bridge

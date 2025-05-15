@@ -27,12 +27,14 @@ public class AuthController {
 
     @Operation(summary = "Login user", description = "Login a user by their username and password")
     @PostMapping("/login")
-    public TokenResponseDto login(@RequestBody UserLoginDto user) {
+    public TokenResponseDto login(@RequestBody UserLoginDto user) throws AuthException {
         try {
+//            System.out.println("~~~ login data: " + user);
             return authService.login(user);
 
         } catch (AuthException e) {
-            return new TokenResponseDto(null, null);
+//            return new TokenResponseDto(null, null);
+            throw new AuthException(e.getMessage());
         }
     }
 

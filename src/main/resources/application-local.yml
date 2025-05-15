@@ -15,8 +15,6 @@ spring:
 server:
   servlet:
     context-path: /api
-#  key_access: oxCIJkAR/pepyVVpChYM3UhUfsjY8jfkSyqp7Do9xFc=
-#  key_refresh: T8QmKiJpXwG0OCXyqJRQ0i9IN5/7G37HPmQqKyOoEd4=
 
 springdoc:
   api-docs:

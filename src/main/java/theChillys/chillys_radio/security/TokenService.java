@@ -1,18 +1,15 @@
 package theChillys.chillys_radio.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import theChillys.chillys_radio.role.IRoleRepository;
 import theChillys.chillys_radio.role.Role;
 import theChillys.chillys_radio.user.entity.User;
-
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -20,15 +17,12 @@ import java.time.ZoneId;
 import java.util.*;
 
 // генератор https://www.devglan.com/online-tools/hmac-sha256-online
-//oxCIJkAR/pepyVVpChYM3UhUfsjY8jfkSyqp7Do9xFc=
-
 //refresh SHA256 Base64.application_properties.md
-
 
 @Service
 public class TokenService {
-    public static final int ACCESS_DAYS = 7;
-    public static final int REFRESH_DAYS = 30;
+    public static final int ACCESS_DAYS = 70;
+    public static final int REFRESH_DAYS = 300;
     private SecretKey accessKey;
     private SecretKey refreshKey;
     private final IRoleRepository roleRepository;
@@ -59,10 +53,11 @@ public class TokenService {
 
         //генерим токен с помощью библиотеки Jwts, закладываем сюда нужную нам инфу
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .expiration(expirationDate)
                 .claim("roles", user.getRoles())//ключ-значение внутри сгенеренного токена
                 .claim("name", user.getUsername())
+                .claim("email", user.getEmail())
                 .signWith(accessKey) // подписываем
                 .compact(); //возвращает строку собственно токена
     }
@@ -72,7 +67,7 @@ public class TokenService {
         Date expirationDate = getExpirationDate(REFRESH_DAYS);
 
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .expiration(expirationDate)
                 .signWith(refreshKey)
                 .compact();
@@ -106,9 +101,6 @@ public class TokenService {
    //     }
   //  }
 
-
-
-
     public boolean validateAccessToken(String accessToken){
         return validateToken(accessToken, accessKey);
     }
@@ -134,7 +126,6 @@ public class TokenService {
     //            .getBody();
   //  }
 
-
     public Claims getAccessClaims(String accessToken){
         return getClaims(accessToken, accessKey);
     }
@@ -155,7 +146,6 @@ public class TokenService {
    //     }
   //  }
 
-
     public AuthInfo mapClaimsToAuthInfo (Claims claims){
 
         String username = claims.getSubject(); //при формировании
@@ -174,5 +164,4 @@ public class TokenService {
         }
         return new AuthInfo(username, roles);
     }
-
 }
