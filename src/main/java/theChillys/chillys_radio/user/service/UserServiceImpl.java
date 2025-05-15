@@ -71,7 +71,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
         checkUserData(dto);
 
-        checkIfUserExistsByName(dto);
+//        checkIfUserExistsByName(dto);
+        checkIfUserExistsByEmail(dto);
 
         Role role = roleService.getRoleByTitle("ROLE_USER");
 
@@ -96,7 +97,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     private static User createNewUserFromDto(UserRequestDto dto, String encodedPass, Role role) {
         User newUser = new User();
-        newUser.setName(dto.getName());
+        newUser.setName(dto.getName().isEmpty() ? "No name" : dto.getName());
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(encodedPass);
         newUser.setRoles(Collections.singleton(role));
@@ -126,10 +127,16 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         });
     }
 
+    private void checkIfUserExistsByEmail(UserRequestDto dto) {
+        repository.findUserByEmail(dto.getEmail()).ifPresent(u -> {
+            throw new RuntimeException("User " + dto.getName() + " with Email " + dto.getEmail() + " already exists");
+        });
+    }
+
     private static void checkUserData(UserRequestDto dto) {
-        if (dto.getName() == null || dto.getName().isEmpty()) {
-            throw new IllegalArgumentException("User name is required");
-        }
+//        if (dto.getName() == null || dto.getName().isEmpty()) {
+//            throw new IllegalArgumentException("User name is required");
+//        }
         if (dto.getEmail() == null || dto.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
@@ -157,9 +164,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto setAdminRole(String name) {
+    public UserResponseDto setAdminRole(String email) {
 
-        User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with email: " + name + " not found"));
+        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
 
         if (!user.getRoles().contains(roleService.getRoleByTitle("ROLE_ADMIN"))) {
             Set<Role> roles = user.getRoles();
@@ -177,7 +184,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Transactional
     public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
         User user = findUserById(userId);
-        user.setId(userId);
+//        user.setId(userId);// wtf? What for?
 
         if (dto.getName() != null) {
             user.setName(dto.getName());
@@ -188,31 +195,30 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         if (dto.getPassword() != null) {
             user.setPassword(encoder.encode(dto.getPassword()));
         }
+
         user.setRoles(user.getRoles());
         user.setFavorites(user.getFavorites());
 
-
         User savedUser = repository.save(user);
-        return mapper.map(savedUser, UserResponseDto.class);
 
+        return mapper.map(savedUser, UserResponseDto.class);
     }
 
     @Override
     @Transactional
-    public UserResponseDto changePassword(String name, String oldPassword, String newPassword) {
-        User user = findUserByName(name);
+    public UserResponseDto changePassword(String email, String oldPassword, String newPassword) {
+        User user = repository.findUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User with email: " + email + " not found"));
+
         if(!encoder.matches(oldPassword, user.getPassword())) {
             throw new RuntimeException("Old password incorrect");
         }
+
         String encodedPass = encoder.encode(newPassword);
         user.setPassword(encodedPass);
         User savedUser = repository.save(user);
-        return mapper.map(savedUser, UserResponseDto.class);
-    }
 
-    public User findUserByName(String name) {
-        return repository.findUserByName(name)
-                .orElseThrow(() -> new RuntimeException("User with name: " + name + " not found"));
+        return mapper.map(savedUser, UserResponseDto.class);
     }
 
     @Override
@@ -225,8 +231,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public List<UserResponseDto> findUsersByNameOrEmail(String name, String email) {
         List<User> users = repository.findByNameContainingOrEmailContaining(name, email);
 
-        return users.stream()
-                .map(user -> mapper.map(user, UserResponseDto.class)).toList();
+        if(users.isEmpty()) {
+            throw new UserNotFoundException(("User with name: " + name + " or " + email + "not found"));
+        } else {
+            return users.stream()
+                    .map(user -> mapper.map(user, UserResponseDto.class)).toList();
+        }
     }
 
     public UserResponseDto getUserResponseDtoByName(String name) {
@@ -234,29 +244,41 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         User user = repository.findUserByName(name).orElseThrow(() -> new UserNotFoundException("User with name: " + name + " not found"));
 
         return mapper.map(user, UserResponseDto.class);
+    }
 
+    public UserResponseDto getUserResponseDtoByEmail(String email) {
+
+        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+
+        return mapper.map(user, UserResponseDto.class);
     }
 
     //как spring получает User по логину - логин - это name!
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String name) throws UserNotFoundException {
 
         return repository.findUserByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with name: " + name + " not found"));
     }
 
     @Override
-    public List<StationResponseDto> getUsersFavoriteStations(String name) {
+    public UserDetails loadUserByEmail(String email) throws UserNotFoundException {
+        return repository.findUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
+    }
 
-        UserResponseDto user = getUserResponseDtoByName(name);
+    @Override
+    public List<StationResponseDto> getUsersFavoriteStations(String email) {
+
+        UserResponseDto user = getUserResponseDtoByEmail(email);
 
         return user.getFavorites();
     }
 
     @Override
-    public List<StationResponseDto> toggleFavoriteStation(String name, String stationuuid) {
+    public List<StationResponseDto> toggleFavoriteStation(String email, String stationuuid) {
 
-        User user = repository.findUserByName(name).orElseThrow(() -> new UsernameNotFoundException("User with name: " + name + " not found"));
+        User user = repository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found"));
         Station station = stationRepository.findByStationuuid(stationuuid).orElseThrow(() -> new StationNotFoundException("Station with stationuuid: " + stationuuid + " not exist"));
 
         if (user.getFavorites().contains(station)) {
@@ -265,6 +287,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             user.getFavorites().add(station);
         }
         repository.save(user);
-        return getUsersFavoriteStations(name);
+        return getUsersFavoriteStations(email);
     }
 }

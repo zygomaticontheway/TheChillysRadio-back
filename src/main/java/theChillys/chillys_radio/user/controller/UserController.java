@@ -68,6 +68,7 @@ public class UserController {
     @PutMapping("/users/{id}")
     public UserResponseDto updateUser(@PathVariable(name = "id") Long Id, @RequestBody UserRequestDto dto) {
         return service.updateUser(Id, dto);
+        //TODO make it available to Authorized only user
     }
 
     @PostMapping("/users/change-password")
@@ -85,9 +86,10 @@ public class UserController {
 
     @GetMapping("/users/my-profile")
     public UserResponseDto getUserProfile(Principal principal) {
-        String name = principal.getName();
+        String email = principal.getName();
+        System.out.println("### principal.getName(): " + email);
 
-        return service.getUserResponseDtoByName(name);
+        return service.getUserResponseDtoByEmail(email);
     }
 
 }
