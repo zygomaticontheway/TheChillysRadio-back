@@ -48,6 +48,7 @@ services:
       - /home/deploy/certs:/etc/letsencrypt
       - /home/deploy/certbot/www:/var/www/certbot
       - /home/deploy/certs:/etc/letsencrypt/live/chillysradio.site
+      - ./certs:/etc/letsencrypt
     ports:
       - "80:80"
       - "443:443"
@@ -63,6 +64,7 @@ services:
       - /home/deploy/certs:/etc/letsencrypt
       - /home/deploy/letsencrypt:/var/lib/letsencrypt
       - /home/deploy/certbot/www:/var/www/certbot
+      - ./certs:/etc/letsencrypt
     command: certonly --webroot --webroot-path=/var/www/certbot --email chillysradio@gmail.com --agree-tos --no-eff-email -d chillysradio.site -d www.chillysradio.site
 
 #  db:
