@@ -47,6 +47,7 @@ services:
       - /home/deploy/chillys-radio/nginx/empty.conf:/etc/nginx/conf.d/default.conf
       - /home/deploy/certs:/etc/letsencrypt
       - /home/deploy/certbot/www:/var/www/certbot
+      - /home/deploy/certs:/etc/letsencrypt/live/chillysradio.site
     ports:
       - "80:80"
       - "443:443"
