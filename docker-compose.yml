@@ -45,8 +45,6 @@ services:
       - /home/deploy/certs/fullchain.pem:/etc/nginx/ssl/fullchain.pem
       - /home/deploy/certs/privkey.pem:/etc/nginx/ssl/privkey.pem
       - /home/deploy/chillys-radio/nginx/empty.conf:/etc/nginx/conf.d/default.conf
-      - /home/deploy/certs:/etc/letsencrypt
-      - /home/deploy/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
@@ -55,15 +53,6 @@ services:
       - backend
     networks:
       - app-network
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    volumes:
-      - /home/deploy/certs:/etc/letsencrypt
-      - /home/deploy/letsencrypt:/var/lib/letsencrypt
-      - /home/deploy/certbot/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email chillysradio@gmail.com --agree-tos --no-eff-email -d chillysradio.site -d www.chillysradio.site
-
 #  db:
 #    image: postgres:16.0
 #    container_name: postgres
